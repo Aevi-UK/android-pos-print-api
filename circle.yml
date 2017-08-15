@@ -1,0 +1,49 @@
+machine:
+  environment:
+    _JAVA_OPTIONS: "-Xms512m -Xmx2048m"
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
+  java:
+    version: openjdk8
+  node:
+    version: 0.10.22
+
+dependencies:
+  pre:
+    - echo y | android update sdk --no-ui --all --filter tools,platform-tools,android-26
+    - echo y | android update sdk --no-ui --all --filter build-tools-26.0.0
+    - echo y | android update sdk --filter "extra-android-m2repository" --no-ui
+    - echo y | android update sdk --filter "extra-android-support" --no-ui
+    - echo y | android update sdk --filter "extra-google-m2repository" --no-ui
+    - /bin/bash writegradleprops.sh
+  cache_directories:
+    - ~/.android
+  override:
+    - sudo pip install awscli
+    - ./buildDocs.sh
+
+test:
+  override:
+    - ./gradlew clean test
+
+deployment:
+    release:
+        branch: /.*release.*/
+        commands:
+            - ./gradlew build
+    feature:
+        branch: /.*feature.*/
+        commands:
+            - ./gradlew build
+    development:
+        branch: develop
+        commands:
+            - ./gradlew build javadoc
+    production:
+        branch: master
+        commands:
+            - ./gradlew bintrayUpload
+
+general:
+  artifacts:
+    - "documentation/public"
+    - "print-api/build/docs/javadoc"
