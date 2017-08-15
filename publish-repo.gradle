@@ -1,0 +1,32 @@
+apply plugin: 'maven-publish'
+
+publishing {
+    repositories {
+        if (System.getenv("AEVI_ARTIFACTORY_AWS_ACCESS_ID") != null) {
+            maven {
+                name 'release'
+                url "s3://sdk-releases.aevi.com/maven2"
+                credentials(AwsCredentials) {
+                    accessKey System.getenv("AEVI_ARTIFACTORY_AWS_ACCESS_ID")
+                    secretKey System.getenv("AEVI_ARTIFACTORY_AWS_SECRET")
+                }
+            }
+            maven {
+                name 'qa'
+                url "s3://sdk-qa.aevi.com/maven2"
+                credentials(AwsCredentials) {
+                    accessKey System.getenv("AEVI_ARTIFACTORY_AWS_ACCESS_ID")
+                    secretKey System.getenv("AEVI_ARTIFACTORY_AWS_SECRET")
+                }
+            }
+        }
+        maven {
+            name 'snapshot'
+            url "s3://sdk-snapshots.aevi.com/maven2"
+            credentials(AwsCredentials) {
+                accessKey "${aws_accessid}"
+                secretKey "${aws_accesskey}"
+            }
+        }
+    }
+}
