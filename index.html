@@ -1,0 +1,274 @@
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>AEVI Printing API Reference</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <script src="js/lib/energize.js"></script>
+<script src="js/lib/imagesloaded.min.js"></script>
+<script src="js/lib/jquery_ui.js"></script>
+<script src="js/lib/jquery.highlight.js"></script>
+<script src="js/lib/jquery.tocify.js"></script>
+<script src="js/lib/lunr.js"></script>
+    <script src="js/script.js"></script>
+
+    
+      <script>
+        $(function() {
+            setupLanguages(["java"]);
+        });
+      </script>
+    
+  </head>
+
+  <body class="">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="images/navbar.png">
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <img src="images/logo.png">
+      
+        <div class="lang-selector">
+          
+              <a href="#" data-language-name="java">java</a>
+          
+        </div>
+      
+      
+        <div class="search">
+          <input type="text" class="search" id="input-search" placeholder="Search">
+        </div>
+        <ul class="search-results"></ul>
+      
+      <div id="toc">
+      </div>
+      
+        <ul class="toc-footer">
+          
+              <li><a href="#">Sign Up for a print roll</a></li>
+          
+              <li><a href="https://github.com/tripit/slate">Powered by Hampsters</a></li>
+          
+        </ul>
+      
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>The following documents describe how to use the AEVI Printing API. This API allows developers to quickly and easily integrate printing into your Android application. The API allows you to print using any AEVI enabled device and selected printer drivers. Specifically this API is designed for use with receipt/line printer type devices.</p>
+<p>The print API itself makes extensive use of reactive (Rx) based principles. Therefore in the case of the Java API it makes heavy use of the RxJava library. To read more about Rx principles and the RxJava library itself see <a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="external">the documentation here</a>. For the remainder of this documentation it is assumed that the reader is familiar with asynchronous and event-based programming using observable streams.</p>
+<p>Go register at our amazing developer portal here <a href="https://developer.aevi.com/" target="_blank" rel="external">developer portal</a>.</p>
+<h1 id="Getting-started"><a href="#Getting-started" class="headerlink" title="Getting started"></a>Getting started</h1><p>The main entry point to the SDK is to first obtain an instance of the <code>PrintManager</code>. This object can then be used to send print jobs, actions and listen to printer events.</p>
+<blockquote>
+<p>To get an instance of the PrintManager within your application</p>
+</blockquote>
+<pre><code class="highlight java"><div class="line"></div><div class="line">PrinterManager printerManager = PrinterApi.getPrinterManager(<span class="keyword">this</span>);</div></code></pre>
+<p>In order to bind to the printer service your application must also request the permission <code>com.aevi.permission.NGS_PRINT_SERVICE</code></p>
+<pre><code class="highlight xml"><div class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"com.aevi.permission.NGS_PRINT_SERVICE"</span>/&gt;</span></div></code></pre>
+<aside class="notice"><br>Its is assumed that at this point the application has access to the Android <code>Context</code> this can be the <code>Application</code> or <code>Activity</code> <code>Context</code>. Ideally this code would be contained inside a suitable application scope object such as a Dagger <code>Module</code>.<br></aside>
+
+        
+          
+              <h1 id="Printing"><a href="#Printing" class="headerlink" title="Printing"></a>Printing</h1><h2 id="Building-a-request"><a href="#Building-a-request" class="headerlink" title="Building a request"></a>Building a request</h2><pre><code class="java highlight">
+<span class="keyword">if</span>(printerManager.isPrinterServiceAvailable()) {
+
+  PrintPayload payload = <span class="keyword">new</span> PrintPayload();
+
+  <span class="comment">// fill out payload here. Described below</span>
+
+  printerManager.print(payload)
+          .subscribe(<span class="keyword">new</span> Consumer&lt;PrintJob&gt;() {
+              <span class="meta">@Override</span>
+              <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(@NonNull PrintJob printResult)</span> <span class="keyword">throws</span> Exception </span>{
+                  <span class="comment">// Do something with results here</span>
+                  Log.d(TAG, <span class="string">"Got status from printer: "</span> + printResult.getPrintJobState());
+              }
+          }, <span class="keyword">new</span> Consumer&lt;Throwable&gt;() {
+              <span class="meta">@Override</span>
+              <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(@NonNull Throwable throwable)</span> <span class="keyword">throws</span> Exception </span>{
+                  Log.e(TAG, <span class="string">"Error while printing"</span>, throwable);
+              }
+          });
+}
+</code></pre>
+<p>All printing requests require a <code>PrintPayload</code> object to be built, which is described below. Once this object is constructed it is sent to the <code>PrintManager</code> using the <code>print()</code> method. This method must be subscribed too before the payload is sent. You should also check that the printing service is installed and available before calling any print methods as can be seen opposite using the <code>isPrinterServiceAvailable()</code> method.</p>
+<p>The subscriber should also ensure they are subscribed to any errors that may be thrown during printing. Exceptions are only thrown if an unexpected error is returned by the AEVI print service. The stream of <code>PrintJob</code> objects returned by the print service will indicate success or failure of the print itself.</p>
+<p>By default print jobs will be sent to the default printer. However, prints can also be sent to a specific printer. This is accomplished by setting a <code>printerId</code> in the <code>PrintPayload</code> using the <code>setPrinterId()</code> method. The printerIds for available printers can be obtained via the <code>PrintManager.getPrintersSettings()</code> method. Usage of this method is shown below.</p>
+<h2 id="Building-print-payloads"><a href="#Building-print-payloads" class="headerlink" title="Building print payloads"></a>Building print payloads</h2><pre><code class="java highlight">
+PrintPayload printPayload = <span class="keyword">new</span> PrintPayload();
+printPayload.append(<span class="string">"Align Left"</span>);
+printPayload.append(<span class="string">"Align Right"</span>).align(Alignment.RIGHT);
+printPayload.append(<span class="string">"Align Center"</span>).align(Alignment.CENTER);
+printPayload.append(<span class="string">"Emphasized"</span>).fontStyle(FontStyle.EMPHASIZED);
+printPayload.append(<span class="string">"Inverted"</span>).fontStyle(FontStyle.INVERTED);
+printPayload.appendEmptyLine();
+printPayload.append(<span class="string">"InvertedEmphasized"</span>).fontStyle(FontStyle.INVERTED_EMPHASIZED);
+printPayload.append(<span class="string">"Single Underlined"</span>).underline(Underline.SINGLE);
+printPayload.append(<span class="string">"Double Underlined"</span>).underline(Underline.DOUBLE);
+printPayload.appendEmptyLine();
+<span class="comment">// append a basket 20 columns wide</span>
+printPayload.appendLeftRight(<span class="number">20</span>, <span class="string">"Name"</span>, <span class="string">"Price"</span>);
+printPayload.appendLeftRight(<span class="number">20</span>, <span class="string">"Doughnut"</span>, <span class="string">" $1.02"</span>);
+printPayload.appendLeftRight(<span class="number">20</span>, <span class="string">"Beer"</span>, <span class="string">"$6.00"</span>);
+printPayload.appendEmptyLine();
+</code></pre>
+<p><code>PrintPayload</code> objects can be used to configure most textual print layouts you would expect a receipt printer to handle. This includes standard styles such as EMPHASIZED, INVERTED etc and alignment e.g. LEFT, RIGHT. See the javadocs for a full list of styles.</p>
+<pre><code class="java highlight">Bitmap logo = BitmapFactory.decodeResource(context.getResources(),
+                          R.drawable.yourlogo, bitmapFactoryOptions);
+printPayload.appendEmptyLine();
+printPayload.append(logo).align(Alignment.CENTER);
+</code></pre>
+<p>Images can also be added to the <code>PrintPayload</code> as shown in the example.</p>
+<blockquote>
+<p>NOTE: the total size of the <code>PrintPayload</code> should not exceed 1MB so that it can be sent via Android Binder mechanisms.</p>
+</blockquote>
+
+          
+              <h1 id="Printer-settings"><a href="#Printer-settings" class="headerlink" title="Printer settings"></a>Printer settings</h1><pre><code class="java highlight">printerManager.getPrintersSettings()
+                   .subscribe(<span class="keyword">new</span> Consumer&lt;PrinterSettings&gt;() {
+                       <span class="meta">@Override</span>
+                       <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(@NonNull PrinterSettings printerSettings)</span> <span class="keyword">throws</span> Exception </span>{
+                          <span class="comment">// store or cache printer settings here</span>
+                       }
+                   });
+</code></pre>
+<p>The settings of each printer available to your device can be obtained using the <code>getPrintersSettings()</code> method. This method will return an observable stream of <code>PrinterSettings</code> objects. The <code>PrinterSettings</code> object contains various details about the aspects of the printer and the functionality it provides. Each <code>PrinterSettings</code> object also contains the unique value of the printerId that can be used to refer to a specific printer device.</p>
+<p>The <code>PrinterSettings</code> object contains information about:</p>
+<ul>
+<li>paperwidth - The paper width supported by this printer in mm(??)</li>
+<li>resolution - The resolution this printer prints at</li>
+<li>paperkind - The type of paper supported by this printer e.g. THERMAL, NORMAL</li>
+<li>codepages - The character codepages a printer will accept</li>
+<li>actions - The actions that can be sent to this printer to perform a task e.g. “cutPaper”</li>
+<li>options - A <code>Map</code> of String key value pairs that describe any printer specific options this printer exposes</li>
+</ul>
+
+          
+              <h1 id="Printer-statuses"><a href="#Printer-statuses" class="headerlink" title="Printer statuses"></a>Printer statuses</h1><pre><code class="java highlight">
+String printerId = <span class="string">""</span> <span class="comment">// PrinterId obtained previously in getPrintersSettings call</span>
+
+printerManager.status(printerId).subscribe(<span class="keyword">new</span> Consumer&lt;PrinterStatus&gt;() {
+    <span class="meta">@Override</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(@NonNull PrinterStatus printerStatus)</span> <span class="keyword">throws</span> Exception </span>{
+        <span class="comment">// do something with the status if required</span>
+        String status = printerStatus.getStatus();
+    }
+});
+</code></pre>
+<p>Your application can optionally subscribe to printer events. These events can be used to notify the user that something has happened on the printer if required. It is not mandatory that the statuses are observed but they may be useful for the user in diagnosing print issues.</p>
+<table>
+<thead>
+<tr>
+<th>Status Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>connected</td>
+<td>The printer driver has just connected to this printer</td>
+</tr>
+<tr>
+<td>disconnected</td>
+<td>The printer driver has just disconnected from this printer</td>
+</tr>
+<tr>
+<td>coverOpened</td>
+<td>The cover has been opened on the printer</td>
+</tr>
+<tr>
+<td>coverClosed</td>
+<td>The cover has been closed on the printer</td>
+</tr>
+<tr>
+<td>outOfPaper</td>
+<td>The printer has just run out of paper</td>
+</tr>
+<tr>
+<td>lowBattery</td>
+<td>The printers battery is low</td>
+</tr>
+</tbody>
+</table>
+
+          
+              <h1 id="Printer-actions"><a href="#Printer-actions" class="headerlink" title="Printer actions"></a>Printer actions</h1><pre><code class="java highlight">
+String action = <span class="string">"cutPaper"</span>; <span class="comment">// String value obtained from PrinterSettings</span>
+printerManager.sendAction(action);
+</code></pre>
+<p>Actions can be sent to a printer. This method is used to send any custom actions a printer can perform, common examples of action would be “cutPaper” and “openCashDrawer”. Each printer is free to define its own list of available actions. These can be obtained by reading the actions from the <code>PrinterSettings</code> object. Different printer drivers may choose to implement there own set of action commands but default/common actions are defined in the <code>PrinterMessages</code> interface.</p>
+
+          
+              
+          
+              <h1 id="Errors"><a href="#Errors" class="headerlink" title="Errors"></a>Errors</h1><p>Errors returned by printing service are thrown as <code>MessageException</code> objects.</p>
+<p>The following common errors are defined as Strings in the <code>PrinterMessages</code> interface but printer drivers are free to define there own specific errors if required.</p>
+<table>
+<thead>
+<tr>
+<th>Error Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>printFailed</td>
+<td>Printer failed to print unexpectedily</td>
+</tr>
+<tr>
+<td>printerNotFound</td>
+<td>Printer with the given printerId is not found</td>
+</tr>
+<tr>
+<td>serviceNotAvailable</td>
+<td>Printer service not available or not installed</td>
+</tr>
+<tr>
+<td>getSettingsFailed</td>
+<td>Failed while getting printer settings objects</td>
+</tr>
+<tr>
+<td>getStatusFailed</td>
+<td>Failed while getting printer status events</td>
+</tr>
+<tr>
+<td>coverOpen</td>
+<td>Print job failed because the cover is open</td>
+</tr>
+<tr>
+<td>outOfPaper</td>
+<td>Print job failed because the device is out of paper</td>
+</tr>
+<tr>
+<td>busy</td>
+<td>Print job failed because the printer can only handle one print job and it is in progress</td>
+</tr>
+</tbody>
+</table>
+
+          
+        
+      </div>
+      <div class="dark-box">
+        
+          <div class="lang-selector">
+            
+                <a href="#" data-language-name="java">java</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </body>
+</html>
