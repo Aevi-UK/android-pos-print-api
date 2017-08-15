@@ -1,6 +1,1 @@
-include ':print-api', ':DemoPrinterDriverApplication', ':printer-driver-api', ':LegacyPrintAdapter', ':EpsonPrinterDriverApplication'
-include ':PrintingExample'
-include ':PrintingService'
-include ':AlbertBuiltinPrinterDriver'
-include ':BixolonPrinterDriverApplication'
-include ':SeikoPrinterDriverApplication'
+include ':print-api'

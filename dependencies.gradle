@@ -1,0 +1,25 @@
+ext {
+
+    androidBuildVersion = "26.0.0"
+    projectTargetSdkVersion = 26
+    projectMinSdkVersion = 22
+
+    rxMessengerVersion = '1.0.0'
+
+    junitVersion = '4.12'
+    mockitoVersion = '1.10.19'
+    robolectricVersion = '3.3.2'
+    assertJVersion = '2.7.0'
+
+    domainDependencies = [
+            rxMessenger: "com.aevi.android:rxmessenger:$rxMessengerVersion",
+    ]
+
+    testDependencies = [
+            junit                 : "junit:junit:$junitVersion",
+            mockito               : "org.mockito:mockito-core:$mockitoVersion",
+            robolectric           : "org.robolectric:robolectric:$robolectricVersion",
+            robolectricannotations: "org.robolectric:robolectric-annotations:$robolectricVersion",
+            assertJ               : "org.assertj:assertj-core:$assertJVersion",
+    ]
+}
