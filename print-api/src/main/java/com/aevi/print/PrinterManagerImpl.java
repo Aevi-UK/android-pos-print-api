@@ -22,7 +22,12 @@ import android.util.Log;
 
 import com.aevi.android.rxmessenger.ObservableMessengerClient;
 import com.aevi.android.rxmessenger.SendableId;
-import com.aevi.print.model.*;
+import com.aevi.print.model.PrintAction;
+import com.aevi.print.model.PrintJob;
+import com.aevi.print.model.PrintPayload;
+import com.aevi.print.model.PrinterSettings;
+import com.aevi.print.model.PrinterSettingsList;
+import com.aevi.print.model.PrinterStatus;
 import com.aevi.print.model.PrinterStatusRequest;
 
 import java.util.List;
@@ -37,16 +42,16 @@ import static android.content.ContentValues.TAG;
 
 class PrinterManagerImpl implements PrinterManager {
 
-    private static final String PRINT_SERVICE_PACKAGE = "com.aevi.print";
-    private static final String PRINT_MESSENGER_SERVICE_CLASS = "com.aevi.print.PrinterMessagingService";
-    private static final String PRINT_SETTINGS_SERVICE_CLASS = "com.aevi.print.PrinterSettingsService";
-    private static final String PRINTER_STATUS_SERVICE_CLASS = "com.aevi.print.PrinterStatusService";
-    private static final String PRINTER_ACTION_SERVICE_CLASS = "com.aevi.print.PrinterActionService";
+    private static final String PRINT_SERVICE_PACKAGE = "com.aevi.print.service";
+    private static final String PRINT_MESSENGER_SERVICE_CLASS = "com.aevi.print.service.PrinterMessagingService";
+    private static final String PRINT_SETTINGS_SERVICE_CLASS = "com.aevi.print.service.PrinterSettingsService";
+    private static final String PRINTER_STATUS_SERVICE_CLASS = "com.aevi.print.service.PrinterStatusService";
+    private static final String PRINTER_ACTION_SERVICE_CLASS = "com.aevi.print.service.PrinterActionService";
 
     private final ObservableMessengerClient<PrintPayload, PrintJob> printingMessenger;
     private final ObservableMessengerClient<PrintAction, SendableId> printerActionMessenger;
     private final ObservableMessengerClient<PrinterSettingsRequest, PrinterSettingsList> printSettingsMessenger;
-    private final ObservableMessengerClient<com.aevi.print.model.PrinterStatusRequest, PrinterStatus> printerStatusMessenger;
+    private final ObservableMessengerClient<PrinterStatusRequest, PrinterStatus> printerStatusMessenger;
 
     private final Context context;
 
@@ -61,8 +66,7 @@ class PrinterManagerImpl implements PrinterManager {
     @Override
     public boolean isPrinterServiceAvailable() {
         PackageManager packageManager = context.getPackageManager();
-        List<ResolveInfo> resolveInfo = packageManager
-                .queryIntentServices(getIntent(PRINT_MESSENGER_SERVICE_CLASS), PackageManager.MATCH_DEFAULT_ONLY);
+        List<ResolveInfo> resolveInfo = packageManager.queryIntentServices(getIntent(PRINT_MESSENGER_SERVICE_CLASS), PackageManager.MATCH_DEFAULT_ONLY);
         return resolveInfo.size() == 1 && resolveInfo.get(0).serviceInfo != null;
     }
 
@@ -75,38 +79,30 @@ class PrinterManagerImpl implements PrinterManager {
     @Override
     public void sendAction(String printerId, String action) {
         PrintAction printAction = new PrintAction(printerId, action);
-        printerActionMessenger
-                .createObservableForServiceIntent(getIntent(PRINTER_ACTION_SERVICE_CLASS), printAction)
-                .take(1)
-                .subscribe();
+        printerActionMessenger.createObservableForServiceIntent(getIntent(PRINTER_ACTION_SERVICE_CLASS), printAction).take(1).subscribe();
     }
 
     @Override
     public Observable<PrinterStatus> status(String printerName) {
-        com.aevi.print.model.PrinterStatusRequest statusRequest = new PrinterStatusRequest(printerName);
-        return printerStatusMessenger
-                .createObservableForServiceIntent(getIntent(PRINTER_STATUS_SERVICE_CLASS), statusRequest);
+        PrinterStatusRequest statusRequest = new PrinterStatusRequest(printerName);
+        return printerStatusMessenger.createObservableForServiceIntent(getIntent(PRINTER_STATUS_SERVICE_CLASS), statusRequest);
     }
 
     @Override
     public Single<PrinterSettings> getDefaultPrinterSettings() {
         Log.d(TAG, "Getting default printer settings");
-        return getSettingsServiceIntent(PrinterSettingsRequest.createDefaultRequest())
-                .map(new Function<PrinterSettingsList, PrinterSettings>() {
-                    @Override
-                    public PrinterSettings apply(@NonNull PrinterSettingsList printerSettingsList) throws Exception {
-                        PrinterSettings[] printerSettingses = printerSettingsList.getPrinterSettings();
-                        if (printerSettingses != null && printerSettingses.length >= 1) {
-                            return printerSettingses[0];
-                        }
+        return getSettingsServiceIntent(PrinterSettingsRequest.createDefaultRequest()).map(new Function<PrinterSettingsList, PrinterSettings>() {
+            @Override
+            public PrinterSettings apply(@NonNull PrinterSettingsList printerSettingsList) throws Exception {
+                PrinterSettings[] printerSettingses = printerSettingsList.getPrinterSettings();
+                if (printerSettingses != null && printerSettingses.length >= 1) {
+                    return printerSettingses[0];
+                }
 
-                        // TODO should this throw custom exception here?
-                        throw new RuntimeException("No default printer set");
-                    }
-                })
-                .take(1)
-                .observeOn(Schedulers.io())
-                .singleOrError();
+                // TODO should this throw custom exception here?
+                throw new RuntimeException("No default printer set");
+            }
+        }).take(1).observeOn(Schedulers.io()).singleOrError();
     }
 
     @Override
@@ -115,8 +111,7 @@ class PrinterManagerImpl implements PrinterManager {
     }
 
     private Observable<PrinterSettingsList> getSettingsServiceIntent(PrinterSettingsRequest printerRequest) {
-        return printSettingsMessenger
-                .createObservableForServiceIntent(getIntent(PRINT_SETTINGS_SERVICE_CLASS), printerRequest);
+        return printSettingsMessenger.createObservableForServiceIntent(getIntent(PRINT_SETTINGS_SERVICE_CLASS), printerRequest);
     }
 
     private Intent getIntent(String className) {
