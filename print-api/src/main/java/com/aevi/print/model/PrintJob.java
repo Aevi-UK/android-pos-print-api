@@ -37,11 +37,11 @@ public class PrintJob extends SendableId {
          * The print job failed printing.
          */
         FAILED
-
     }
 
     private final State printJobState;
-    private String message;
+    private String failedReason;
+    private String diagnosticMessage;
 
     /**
      * Construct a new PrintJob based on the number of the print job.
@@ -56,18 +56,38 @@ public class PrintJob extends SendableId {
      * Construct a new PrintJob based on the number of the print job.
      *
      * @param printJobState The state of the printJob
-     * @param message       A message to include with the state
+     * @param failedReason  The reason giving the cause of any failure
      */
-    public PrintJob(State printJobState, String message) {
+    public PrintJob(State printJobState, String failedReason) {
         this(printJobState);
-        this.message = message;
+        this.failedReason = failedReason;
+    }
+
+    /**
+     * Construct a new PrintJob based on the number of the print job.
+     *
+     * @param printJobState     The state of the printJob
+     * @param failedReason      The reason giving the cause of any failure
+     * @param diagnosticMessage A diagnostic message to include with the state
+     */
+    public PrintJob(State printJobState, String failedReason, String diagnosticMessage) {
+        this(printJobState);
+        this.failedReason = failedReason;
+        this.diagnosticMessage = diagnosticMessage;
+    }
+
+    /**
+     * @return The reason giving the cause of any failure {@link PrinterMessages}
+     */
+    public String getFailedReason() {
+        return failedReason;
     }
 
     /**
      * @return The message (if any) that was provided along with the state of the print job
      */
-    public String getMessage() {
-        return message;
+    public String getDiagnosticMessage() {
+        return diagnosticMessage;
     }
 
     /**
