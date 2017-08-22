@@ -38,7 +38,7 @@ public interface PrinterMessages {
     String DRAWER_SET_TO_HIGH = "drawerHigh";
     String DRAWER_SET_TO_LOW = "drawerLow";
     String UNKNOWN = "unknown";
-
+    String TIMEOUT = "timeout";
 
     String WARN_PAPER_NEAR_END = "paperNearEnd";
     String WARN_LOW_BATTERY = "warnLowBattery";
