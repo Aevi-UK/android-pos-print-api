@@ -5,8 +5,7 @@ language_tabs:
   - java
 
 toc_footers:
-  - <a href='#'>Sign Up for a print roll</a>
-  - <a href='https://github.com/tripit/slate'>Powered by Hampsters</a>
+  - <a href='https://community.aevi.com'>Join the AEVI community</a>
 
 includes:
   - printing
