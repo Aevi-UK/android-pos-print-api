@@ -125,6 +125,6 @@ public class PrintPayloadTest {
                         "{\"text\":\"Hello\",\"underline\":\"NONE\",\"fontStyle\":\"NORMAL\",\"alignment\":\"LEFT\"},\"type\":\"com.aevi.print.model.TextRow\"}," +
                         "{\"value\":" +
                         "{\"text\":\"World\",\"underline\":\"NONE\",\"fontStyle\":\"NORMAL\",\"alignment\":\"LEFT\"},\"type\":\"com.aevi.print.model.TextRow\"}]," +
-                        "\"codePage\":0,\"id\":\"" + payload.getId() + "\"}");
+                        "\"codePage\":-1,\"id\":\"" + payload.getId() + "\"}");
     }
 }

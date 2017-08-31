@@ -23,12 +23,9 @@ public interface PrinterMessages {
     String ERROR_GET_STATUS_FAILED = "getStatusFailed";
     String ERROR_BUSY = "busy";
 
+    String PRINTER_READY = "printerReady";
     String PRINTER_OFFLINE = "printerOffline";
-    String PRINTER_OFF = "printerOff";
-    String DISCONNECTED = "disconnected";
-    String CONNECTED = "connected";
     String COVER_OPENED = "coverOpened";
-    String COVER_CLOSED = "coverClosed";
     String OUT_OF_PAPER = "outOfPaper";
     String LOW_BATTERY = "lowBattery";
     String MECHANICAL_ERROR = "mechanicalError";
