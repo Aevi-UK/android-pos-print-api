@@ -35,7 +35,7 @@ public class PrintPayload extends SendableId {
 
     private List<JsonOption> rows = new ArrayList<>();
 
-    private int codePage = 0;
+    private int codePage = -1;
     private String printerId;
 
     /**
@@ -172,7 +172,7 @@ public class PrintPayload extends SendableId {
     /**
      * Get the codepage to be used when printing out this payload
      *
-     * @return A code page id
+     * @return A code page id. -1 indicates the default code page is being used.
      */
     public int getCodePage() {
         return codePage;
@@ -181,7 +181,7 @@ public class PrintPayload extends SendableId {
     /**
      * Sets the codepage to be used when printing this payload
      *
-     * @param codePage The codepage. See printer specific documentation for details
+     * @param codePage The codepage. See printer specific documentation for details. Set to -1 for the default codepage.
      */
     public void setCodePage(int codePage) {
         this.codePage = codePage;
