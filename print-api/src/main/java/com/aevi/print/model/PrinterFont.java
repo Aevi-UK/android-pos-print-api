@@ -38,18 +38,30 @@ public class PrinterFont {
         this.supportedFontStyles = supportedFontStyles;
     }
 
+    /**
+     * @return A unique Id used by the printer driver to select the correct font
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * @return The name of this font as a descriptive string
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * @return The width of the font in printer dots (pixels)
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * @return The height of the font in printer dots (pixels)
+     */
     public int getHeight() {
         return height;
     }
@@ -58,14 +70,23 @@ public class PrinterFont {
         return isDefault;
     }
 
+    /**
+     * @return The number of text columns for one row of this font
+     */
     public int getNumColumns() {
         return numColumns;
     }
 
+    /**
+     * @return The line height (in dots) taken up by one row of this font (plus margins and padding)
+     */
     public int getLineHeight() {
         return lineHeight;
     }
 
+    /**
+     * @return The font styles that are supported for this font on this printer
+     */
     public FontStyle[] getSupportedFontStyles() {
         return supportedFontStyles;
     }
