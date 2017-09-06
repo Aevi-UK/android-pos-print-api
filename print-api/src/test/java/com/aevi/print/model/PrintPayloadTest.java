@@ -3,10 +3,6 @@ package com.aevi.print.model;
 import android.graphics.Bitmap;
 import android.os.Build;
 
-import com.aevi.print.model.ImageRow;
-import com.aevi.print.model.PrintPayload;
-import com.aevi.print.model.TextRow;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -53,19 +49,29 @@ public class PrintPayloadTest {
 
         assertThat(row1).isNotNull();
         assertThat(payload.getRows()).hasSize(2);
+        assertThat(((TextRow) payload.getRows()[0]).getPrinterFontId()).isEqualTo(PrinterFont.DEFAULT_FONT);
     }
 
     @Test
     public void canAddImage() {
         PrintPayload payload = new PrintPayload();
         assertThat(payload.getRows()).hasSize(0);
-        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-        Bitmap bmp = Bitmap.createBitmap(100, 100, conf);
+        Bitmap bmp = getBitmap();
 
         ImageRow imageRow = payload.append(bmp);
 
         assertThat(imageRow).isNotNull();
         assertThat(payload.getRows()).hasSize(1);
+    }
+
+    @Test
+    public void canSetImageScale() {
+        PrintPayload payload = new PrintPayload();
+        Bitmap bmp = getBitmap();
+
+        ImageRow imageRow = payload.append(bmp, true);
+
+        assertThat(imageRow.isScaleToFit()).isTrue();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -112,19 +118,44 @@ public class PrintPayloadTest {
         assertThat(payload.getCodePage()).isEqualTo(23);
     }
 
+
+    @Test
+    public void canSetLanguage() {
+        PrintPayload payload = new PrintPayload();
+
+        payload.setLanguage("de");
+
+        assertThat(payload.getLanguage()).isEqualTo("de");
+    }
+
     @Test
     public void canSerialise() {
         PrintPayload payload = new PrintPayload();
         payload.append("Hello");
         payload.append("World");
+        payload.setLanguage("fr");
 
         String json = payload.toJson();
-        assertThat(json).isEqualTo(
-                "{\"rows\":[" +
-                        "{\"value\":" +
-                        "{\"text\":\"Hello\",\"underline\":\"NONE\",\"fontStyle\":\"NORMAL\",\"alignment\":\"LEFT\"},\"type\":\"com.aevi.print.model.TextRow\"}," +
-                        "{\"value\":" +
-                        "{\"text\":\"World\",\"underline\":\"NONE\",\"fontStyle\":\"NORMAL\",\"alignment\":\"LEFT\"},\"type\":\"com.aevi.print.model.TextRow\"}]," +
-                        "\"codePage\":-1,\"id\":\"" + payload.getId() + "\"}");
+        assertThat(json).isEqualTo("{\"rows\":[" + "{\"value\":"
+                + "{\"text\":\"Hello\",\"printerFontId\":-1,\"underline\":\"NONE\",\"fontStyle\":\"NORMAL\",\"alignment\":\"LEFT\"},\"type\":\"com.aevi.print.model.TextRow\"},"
+                + "{\"value\":"
+                + "{\"text\":\"World\",\"printerFontId\":-1,\"underline\":\"NONE\",\"fontStyle\":\"NORMAL\",\"alignment\":\"LEFT\"},\"type\":\"com.aevi.print.model.TextRow\"}],"
+                + "\"codePage\":-1,\"languageCode\":\"fr\",\"id\":\""
+                + payload.getId()
+                + "\"}");
+    }
+
+    @Test
+    public void canSetFont() {
+        PrintPayload payload = new PrintPayload();
+        PrinterFont printerFont = new PrinterFont(56, "FontyMcFontFace", 0, 0, false, 0, 0, null);
+        TextRow textRow = payload.append("Hello", printerFont);
+
+        assertThat(textRow.getPrinterFontId()).isEqualTo(56);
+    }
+
+    private Bitmap getBitmap() {
+        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+        return Bitmap.createBitmap(100, 100, conf);
     }
 }

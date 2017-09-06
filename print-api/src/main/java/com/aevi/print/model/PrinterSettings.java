@@ -27,7 +27,6 @@ public class PrinterSettings extends SendableId {
 
     private final String printerId;
     private final int paperWidth;
-    private final int printerResolution;
     private final PaperKind paperKind;
     private final String[] commands;
     private final int[] codepages;
@@ -35,14 +34,13 @@ public class PrinterSettings extends SendableId {
     private final boolean canHandleCommands;
     private final boolean doesReportStatus;
     private final boolean doesSupportCodepages;
+    private final String[] supportedLanguages;
 
-    PrinterSettings(String printerId, int paperWidth, int printerResolution, PaperKind paperKind,
-                    boolean canHandleCommands,
-                    String[] commands,
-                    boolean doesReportStatus,
-                    int[] codepages,
-                    boolean doesSupportCodepages,
-                    Map<String, String> options) {
+    private final PrinterFont[] printerFonts;
+
+    PrinterSettings(String printerId, int paperWidth, PaperKind paperKind, PrinterFont[] printerFonts, boolean canHandleCommands, String[] commands,
+                    boolean doesReportStatus, int[] codepages, boolean doesSupportCodepages, Map<String, String> options,
+                    String[] supportedLanguages) {
 
         if (printerId == null) {
             throw new IllegalArgumentException("printerId must not be null");
@@ -54,7 +52,6 @@ public class PrinterSettings extends SendableId {
 
         this.printerId = printerId;
         this.paperWidth = paperWidth;
-        this.printerResolution = printerResolution;
         this.paperKind = paperKind;
         this.commands = commands;
         this.codepages = codepages;
@@ -62,6 +59,8 @@ public class PrinterSettings extends SendableId {
         this.canHandleCommands = canHandleCommands;
         this.doesReportStatus = doesReportStatus;
         this.doesSupportCodepages = doesSupportCodepages;
+        this.printerFonts = printerFonts;
+        this.supportedLanguages = supportedLanguages;
     }
 
     /**
@@ -74,9 +73,9 @@ public class PrinterSettings extends SendableId {
     }
 
     /**
-     * Gets the width of the paper in millimeters.
+     * Gets the width of the paper in pixels.
      *
-     * @return the width of the paper in millimeters.
+     * @return the width of the paper in pixels.
      */
     public int getPaperWidth() {
         return paperWidth;
@@ -92,12 +91,12 @@ public class PrinterSettings extends SendableId {
     }
 
     /**
-     * Gets the resolution of the printer in DPI.
+     * Gets a list of fonts this printer supports
      *
-     * @return the resolution of the printer in DPI.
+     * @return A List of printer fonts
      */
-    public int getPrinterResolution() {
-        return printerResolution;
+    public PrinterFont[] getPrinterFonts() {
+        return printerFonts;
     }
 
     /**
@@ -146,6 +145,15 @@ public class PrinterSettings extends SendableId {
      */
     public boolean doesReportPrinterStatus() {
         return doesReportStatus;
+    }
+
+    /**
+     * Returns a list of two letter (ISO 639) language codes that are supported by this printer
+     *
+     * @return A list of two letter ISO 639 codes
+     */
+    public String[] getSupportedLanguages() {
+        return supportedLanguages;
     }
 
     @Override
