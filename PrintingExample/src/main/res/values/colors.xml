@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="red">#f00</color>
+    <color name="colorPrimary">#cd0404</color>
+    <color name="colorPrimaryDark">#a51317</color>
+    <color name="colorAccent">#ff83B337</color>
+    <color name="colorTitleText">#c62828</color>
+    <color name="colorOffWhite">#ffededed</color>
+
+    <color name="spinnerDropdownBorder">#cd0404</color>
+    <color name="spinnerDropdownBackground">#f0f0f0</color>
+</resources>

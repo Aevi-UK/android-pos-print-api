@@ -96,11 +96,13 @@ public class TextRow implements PrintRow, Cloneable {
      * Allows the font to be set for this text row
      *
      * @param font The font to set
+     * @return This textRow object
      */
-    public void setFont(PrinterFont font) {
+    public TextRow setFont(PrinterFont font) {
         if (font != null) {
             this.printerFontId = font.getId();
         }
+        return this;
     }
 
     /**

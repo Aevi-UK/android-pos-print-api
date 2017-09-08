@@ -4,15 +4,29 @@ ext {
     projectTargetSdkVersion = 26
     projectMinSdkVersion = 22
 
-    rxMessengerVersion = '1.0.0'
+    rxAndroidVersion = '2.0.1'
+    rxJavaVersion = '2.1.0'
+    rxMessengerVersion = '1.0.1'
 
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'
     robolectricVersion = '3.3.2'
     assertJVersion = '2.7.0'
 
+    butterKnifeVersion = '8.5.1'
+    supportLibrary = '26.0.0'
+
+    presentationDependencies = [
+
+            butterKnife: "com.jakewharton:butterknife:$butterKnifeVersion",
+            support    : "com.android.support:support-v4:$supportLibrary",
+            appCompat  : "com.android.support:appcompat-v7:$supportLibrary",
+    ]
+
     domainDependencies = [
             rxMessenger: "com.aevi.android:rxmessenger:$rxMessengerVersion",
+            rxJava     : "io.reactivex.rxjava2:rxjava:$rxJavaVersion",
+            rxAndroid  : "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion",
     ]
 
     testDependencies = [
@@ -21,5 +35,9 @@ ext {
             robolectric           : "org.robolectric:robolectric:$robolectricVersion",
             robolectricannotations: "org.robolectric:robolectric-annotations:$robolectricVersion",
             assertJ               : "org.assertj:assertj-core:$assertJVersion",
+    ]
+
+    aptDependencies = [
+            butterKnife: "com.jakewharton:butterknife-compiler:$butterKnifeVersion"
     ]
 }
