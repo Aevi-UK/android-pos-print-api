@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * A {@link PrintPayload} contains a collection of {@link PrintRow} that
  * represent a printable text document.
- * <p>
+ *
  * By binding to the {@link PrinterManager} this pay load can be send to the
  * receipt printer for printing.
  */
@@ -37,6 +37,7 @@ public class PrintPayload extends SendableId {
 
     private int codePage = -1;
     private String printerId;
+    private String languageCode;
 
     /**
      * Creates an empty {@link PrintPayload} object.
@@ -63,10 +64,22 @@ public class PrintPayload extends SendableId {
      * @return The new {@link TextRow} object added to the payload
      */
     public TextRow append(String text) {
+        return append(text, null);
+    }
+
+    /**
+     * Appends the given text row to this printer payload and ensure the printer font given is used
+     *
+     * The font must match a {@link PrinterFont} as provided by the printer via its settings methods. See {@link PrinterSettings#getPrinterFonts()}.
+     *
+     * @param text        The text to add
+     * @param printerFont The printer font to use
+     */
+    public TextRow append(String text, PrinterFont printerFont) {
         if (text == null) {
             throw new IllegalArgumentException("text must not be null");
         }
-        TextRow textRow = new TextRow(text);
+        TextRow textRow = new TextRow(text, printerFont);
         rows.add(new JsonOption(textRow));
         return textRow;
     }
@@ -113,7 +126,6 @@ public class PrintPayload extends SendableId {
         return append(line);
     }
 
-
     /**
      * Appends two strings to a line one aligned left one right
      *
@@ -145,10 +157,14 @@ public class PrintPayload extends SendableId {
      * @return The new {@link ImageRow} object added to the payload
      */
     public ImageRow append(Bitmap image) {
+        return append(image, true);
+    }
+
+    public ImageRow append(Bitmap image, boolean scaleToFit) {
         if (image == null) {
             throw new IllegalArgumentException("image must not be null");
         }
-        ImageRow imageRow = new ImageRow(image);
+        ImageRow imageRow = new ImageRow(image, scaleToFit);
         rows.add(new JsonOption(imageRow));
         return imageRow;
     }
@@ -185,6 +201,21 @@ public class PrintPayload extends SendableId {
      */
     public void setCodePage(int codePage) {
         this.codePage = codePage;
+    }
+
+    /**
+     * @return Gets the ISO-639 language code set for this payload or null for the default
+     */
+    public String getLanguage() {
+        return languageCode;
+    }
+
+    /**
+     * Sets the language code to be used for this print payload
+     * @param languageCode An ISO-639 two letter language code (usually obtained from {@link java.util.Locale#getLanguage()} if required)
+     */
+    public void setLanguage(String languageCode) {
+        this.languageCode = languageCode;
     }
 
     /**

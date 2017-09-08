@@ -15,12 +15,15 @@ package com.aevi.print.model;
 
 import com.aevi.android.rxmessenger.JsonConverter;
 
+import static com.aevi.print.model.PrinterFont.DEFAULT_FONT;
+
 /**
  * This class represents a single text line in a {@link com.aevi.print.model.PrintPayload}.
  */
 public class TextRow implements PrintRow, Cloneable {
 
     private String text;
+    private int printerFontId = DEFAULT_FONT;
     private Underline underline = Underline.NONE;
     private FontStyle fontStyle = FontStyle.NORMAL;
     private Alignment alignment = Alignment.LEFT;
@@ -31,8 +34,22 @@ public class TextRow implements PrintRow, Cloneable {
      * @param text The row text. This parameter must not be null.
      */
     public TextRow(String text) {
+        this(text, null);
+    }
+
+    /**
+     * Creates a left aligned text row using the font given by the fontId.
+     * The font must match a {@link PrinterFont} as provided by the printer via its settings methods. See {@link PrinterSettings#getPrinterFonts()}.
+     *
+     * @param text        The text to add
+     * @param printerFont The printer font to use
+     */
+    public TextRow(String text, PrinterFont printerFont) {
         if (text == null) {
             throw new IllegalArgumentException("text must not be null");
+        }
+        if (printerFont != null) {
+            this.printerFontId = printerFont.getId();
         }
         this.text = text;
     }
@@ -44,6 +61,15 @@ public class TextRow implements PrintRow, Cloneable {
      */
     public String getText() {
         return text;
+    }
+
+    /**
+     * The id of the printer font to be used for this text row
+     *
+     * @return A printer font id
+     */
+    public int getPrinterFontId() {
+        return printerFontId;
     }
 
     /**
@@ -64,6 +90,17 @@ public class TextRow implements PrintRow, Cloneable {
     public TextRow underline(Underline underline) {
         this.underline = underline;
         return this;
+    }
+
+    /**
+     * Allows the font to be set for this text row
+     *
+     * @param font The font to set
+     */
+    public void setFont(PrinterFont font) {
+        if (font != null) {
+            this.printerFontId = font.getId();
+        }
     }
 
     /**
