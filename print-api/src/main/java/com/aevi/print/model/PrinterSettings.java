@@ -73,9 +73,9 @@ public class PrinterSettings extends SendableId {
     }
 
     /**
-     * Gets the width of the paper in pixels.
+     * Gets the width of the paper in dots.
      *
-     * @return the width of the paper in pixels.
+     * @return the width of the paper in dots.
      */
     public int getPaperWidth() {
         return paperWidth;

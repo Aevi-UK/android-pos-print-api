@@ -157,7 +157,7 @@ public class PrintPayload extends SendableId {
      * @return The new {@link ImageRow} object added to the payload
      */
     public ImageRow append(Bitmap image) {
-        return append(image, false);
+        return append(image, true);
     }
 
     public ImageRow append(Bitmap image, boolean scaleToFit) {
