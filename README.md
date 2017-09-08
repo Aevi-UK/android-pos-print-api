@@ -35,7 +35,7 @@ repositories section.
 And then add to your dependencies section
 
 ```
-compile 'com.aevi.print:print-api:0.0.4'
+compile 'com.aevi.print:print-api:0.0.5'
 
 ```
 
