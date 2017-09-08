@@ -93,6 +93,17 @@ public class TextRow implements PrintRow, Cloneable {
     }
 
     /**
+     * Allows the font to be set for this text row
+     *
+     * @param font The font to set
+     */
+    public void setFont(PrinterFont font) {
+        if (font != null) {
+            this.printerFontId = font.getId();
+        }
+    }
+
+    /**
      * Gets the {@link Alignment} style of this text row.
      *
      * @return the alignment style to set.
