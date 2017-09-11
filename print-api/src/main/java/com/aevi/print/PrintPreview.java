@@ -13,13 +13,14 @@
  */
 package com.aevi.print;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.aevi.print.model.Alignment;
@@ -36,28 +37,27 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.R.attr.width;
 import static android.graphics.Bitmap.createScaledBitmap;
 
 public final class PrintPreview {
 
     private static final String TAG = PrintPreview.class.getSimpleName();
 
-    // FIXME these should probably be defined in printer settings
+    // margin used to add some padding between images and at the start/end of the print preview
     private static final int VERTICAL_MARGIN = 8;
+    // font to be used for preview if printer driver returns no font details
+    private static final PrinterFont UNKNOWN_FONT =
+            new PrinterFont(PrinterFont.DEFAULT_FONT, "Unknown font", 12, 24, true, 48, 32, FontStyle.values());
 
     private final PrintPayload printPayload;
     private final PrinterSettings printerSettings;
     private final Canvas canvas;
     private final Bitmap bitmap;
     private final int availableWidth;
-    private int cursor = VERTICAL_MARGIN;
-
-    // font to be used for preview if printer driver returns no font details
-    private PrinterFont UNKNOWN_FONT = new PrinterFont(PrinterFont.DEFAULT_FONT, "Unknown font", 12, 24, true, 48, 32, FontStyle.values());
+    private int cursor;
 
     public PrintPreview(PrintPayload printPayload, PrinterSettings printerSettings) {
-        this.availableWidth = printerSettings.getPaperWidth();
+        this.availableWidth = Math.round(printerSettings.getPaperDotsPerMm() * printerSettings.getPrintableWidth());
         this.printPayload = printPayload;
         this.printerSettings = printerSettings;
         bitmap = Bitmap.createBitmap(availableWidth, determineHeight(), Bitmap.Config.ARGB_8888);
@@ -65,9 +65,34 @@ public final class PrintPreview {
         fillBitmap();
     }
 
+    /**
+     * Returns a raw bitmap that will have the same number of pixels as available dots for the {@link PrinterSettings} given in the constructor
+     *
+     * @return A bitmap with width == printer dots
+     */
     public Bitmap getBitmap() {
+        cursor = VERTICAL_MARGIN;
         byte[] bytes = getCompressedBitmap();
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
+
+    /**
+     * Returns a scaled bitmap that will be scaled according to the current screen/display. This bitmap when displayed on the screen will have a
+     * size equal to the physical size of the printout according to the parameter in {@link PrinterSettings#getPrintableWidth()} (in mm).
+     *
+     * @param context The current Android context
+     * @return A scaled bitmap that can be shown on the screen to provide an indication of what the exact printout will look like
+     */
+    public Bitmap getScaledBitmap(Context context) {
+        cursor = VERTICAL_MARGIN;
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        Bitmap bitmap = getBitmap();
+        float pxPerMm = metrics.xdpi / 25.4f; // convert from dpi to dpmm
+        int width = bitmap.getWidth();
+        float scale = (printerSettings.getPrintableWidth() * pxPerMm) / (float) width;
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() * scale), (int) (bitmap.getHeight() * scale), true);
+        bitmap.recycle();
+        return scaledBitmap;
     }
 
     private byte[] getCompressedBitmap() {
@@ -162,14 +187,11 @@ public final class PrintPreview {
         PrinterFont font = getFont(textRow.getPrinterFontId());
         Paint paint = getPaint(textRow, font);
         String txt = textRow.getText();
-        Rect bounds = new Rect();
-        paint.getTextBounds(txt, 0, txt.length(), bounds);
-        int textBaseline = bounds.height();
-        if (textRow.getUnderlineStyle() == Underline.DOUBLE) {
-            bounds.set(bounds.left, bounds.top, bounds.right, bounds.bottom + VERTICAL_MARGIN);
-        }
+        float width = paint.measureText(txt);
+        int textBaseline = font.getHeight();
+        int lineHeight = font.getLineHeight();
 
-        Bitmap textRowBitmap = Bitmap.createBitmap(bounds.width() + 4, bounds.height(), Bitmap.Config.ARGB_8888);
+        Bitmap textRowBitmap = Bitmap.createBitmap((int) width, lineHeight, Bitmap.Config.ARGB_8888);
         Canvas textRowCanvas = new Canvas(textRowBitmap);
 
         if (textRow.getFontStyle() == FontStyle.INVERTED || textRow.getFontStyle() == FontStyle.INVERTED_EMPHASIZED) {
@@ -196,6 +218,13 @@ public final class PrintPreview {
         paint.setUnderlineText(textRow.getUnderlineStyle() != Underline.NONE);
         paint.setTextSize(font.getHeight());
         paint.setTextAlign(Paint.Align.LEFT);
+
+        String meas = new String(new char[font.getNumColumns() + 1]).replace('\0', 'M');
+
+        float lineWidth = paint.measureText(meas);
+        float scaleX = availableWidth / lineWidth;
+        paint.setTextScaleX(scaleX);
+
         if (textRow.getFontStyle() == FontStyle.INVERTED || textRow.getFontStyle() == FontStyle.INVERTED_EMPHASIZED) {
             paint.setColor(Color.WHITE);
         } else {
@@ -221,7 +250,7 @@ public final class PrintPreview {
             throw new IllegalArgumentException("Image is larger than the available width of the paper");
         }
         canvas.drawBitmap(image, xPosition(alignment, image.getWidth()), cursor, new Paint());
-        cursor += image.getHeight() + VERTICAL_MARGIN;
+        cursor += image.getHeight();
     }
 
     private int xPosition(Alignment alignment, int width) {

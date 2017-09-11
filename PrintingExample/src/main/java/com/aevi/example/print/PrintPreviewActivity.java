@@ -1,6 +1,7 @@
 package com.aevi.example.print;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
@@ -46,7 +47,8 @@ public class PrintPreviewActivity extends AppCompatActivity {
 
     private void setupPreview() {
         PrintPreview printPreview = new PrintPreview(payload, printerSettings);
-        preview.setImageBitmap(printPreview.getBitmap());
+        Bitmap scaledBitmap = printPreview.getScaledBitmap(this);
+        preview.setImageBitmap(scaledBitmap);
         preview.setMinimumWidth(printerSettings.getPaperWidth());
     }
 }

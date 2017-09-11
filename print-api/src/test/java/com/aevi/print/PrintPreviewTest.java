@@ -52,9 +52,7 @@ public class PrintPreviewTest {
     };
 
     public PrinterSettings getPrinterSettings() {
-        return new TestPrinterSettingsBuilder()
-                .withPrinterId("TestPrinterSettings")
-                .withPaperWidth(576)
+        return new TestPrinterSettingsBuilder("TestPrinterSettings", 80, 75, 7.68f)
                 .withPrinterFonts(DEFAULT_FONTS)
                 .withPaperKind(PaperKind.THERMAL)
                 .withDoesReportStatus(true)

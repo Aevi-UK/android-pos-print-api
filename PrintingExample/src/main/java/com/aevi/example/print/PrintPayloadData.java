@@ -104,9 +104,20 @@ public class PrintPayloadData {
         PrinterFont[] fonts = printerSettings.getPrinterFonts();
         if (fonts != null) {
             for (PrinterFont font : fonts) {
-                printPayload.append("Some text in: " + font.getName(), font);
+                printPayload.append("Some text in: " + font.getName() + " cols: " + font.getNumColumns(), font);
+
+                String tstStr = "";
+                for (int i = 0; i < font.getNumColumns(); i++) {
+                    if (i % 10 == 0) {
+                        tstStr += "|";
+                    } else {
+                        tstStr += "-";
+                    }
+                }
+                printPayload.append(tstStr, font);
             }
         }
+
 
         Bitmap image = BitmapFactory.decodeResource(context.getResources(), R.drawable.bwlogotrans);
         printPayload.append(image);

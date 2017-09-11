@@ -27,6 +27,8 @@ public class PrinterSettings extends SendableId {
 
     private final String printerId;
     private final int paperWidth;
+    private final int printableWidth;
+    private final float paperDotsPmm;
     private final PaperKind paperKind;
     private final String[] commands;
     private final int[] codepages;
@@ -38,8 +40,12 @@ public class PrinterSettings extends SendableId {
 
     private final PrinterFont[] printerFonts;
 
-    PrinterSettings(String printerId, int paperWidth, PaperKind paperKind, PrinterFont[] printerFonts, boolean canHandleCommands, String[] commands,
-                    boolean doesReportStatus, int[] codepages, boolean doesSupportCodepages, Map<String, String> options,
+    PrinterSettings(String printerId, int paperWidth, int printableWidth, float paperDotsPmm,
+                    PaperKind paperKind, PrinterFont[] printerFonts,
+                    boolean canHandleCommands, String[] commands,
+                    boolean doesReportStatus,
+                    int[] codepages, boolean doesSupportCodepages,
+                    Map<String, String> options,
                     String[] supportedLanguages) {
 
         if (printerId == null) {
@@ -52,6 +58,8 @@ public class PrinterSettings extends SendableId {
 
         this.printerId = printerId;
         this.paperWidth = paperWidth;
+        this.printableWidth = printableWidth;
+        this.paperDotsPmm = paperDotsPmm;
         this.paperKind = paperKind;
         this.commands = commands;
         this.codepages = codepages;
@@ -73,12 +81,30 @@ public class PrinterSettings extends SendableId {
     }
 
     /**
-     * Gets the width of the paper in dots.
+     * Gets the width of the paper in mm.
      *
-     * @return the width of the paper in dots.
+     * @return the width of the paper in mm.
      */
     public int getPaperWidth() {
         return paperWidth;
+    }
+
+    /**
+     * Gets the actual available printing width in mm. This is usually the width of the paper minus any left/right margins
+     *
+     * @return The available printing width in mm
+     */
+    public int getPrintableWidth() {
+        return printableWidth;
+    }
+
+    /**
+     * Gets the resolution of the printer in dots per mm (dpmm).
+     *
+     * @return the dots per mm this printer has for the given paper size above.
+     */
+    public float getPaperDotsPerMm() {
+        return paperDotsPmm;
     }
 
     /**
