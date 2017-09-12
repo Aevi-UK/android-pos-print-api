@@ -1,1 +1,1 @@
-include ':print-api'
+include ':print-api', ':PrintingExample'

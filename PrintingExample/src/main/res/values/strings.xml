@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AEVI Printing Example</string>
+
+    <string-array name="print_examples">
+        <item>Example 1 - Hello world</item>
+        <item>Example 2 - Text style test</item>
+        <item>Example 3 - Basket print test</item>
+        <item>Example 4 - Canvas print 1</item>
+        <item>Example 5 - Canvas print 2</item>
+        <item>Example 6 - Common currency symbols</item>
+    </string-array>
+
+    <string-array name="codepage_values">
+        <item>Code Page 437 USA</item>
+        <item>Code Page 858 EURO</item>
+        <item>Code Page 737 GREEK</item>
+    </string-array>
+
+    <string name="printing_samples">Printing Samples</string>
+
+    <string name="select_print_driver">Print driver</string>
+
+    <string name="select_print_example">Print example</string>
+    <string name="status_hint">-- Statuses will appear here when received for printer selected above --</string>
+    <string name="preview_receipt">Preview</string>
+    <string name="print_receipt">Print</string>
+
+    <string name="status_toast_message">Got status from printer: %1$s</string>
+    <string name="failure_toast_message">Got status from printer: %1$s (%2$s)</string>
+
+    <string name="printing_with_code_page">Printing with code page</string>
+    <string name="preview_code_page_example">Preview code page example</string>
+    <string name="print_code_page_example">Print code page example</string>
+
+    <string name="print_service_not_installed">Print service not installed app will exit</string>
+
+</resources>
