@@ -1,0 +1,70 @@
+apply plugin: 'com.android.application'
+
+ext.applicationName = "PrintingExample"
+ext.artifactIdPrefix = "ngs-printing-example"
+ext.artifactGroupId = "com.aevi.example.print"
+
+android {
+    compileSdkVersion projectTargetSdkVersion
+    buildToolsVersion "${androidBuildVersion}"
+
+    defaultConfig {
+        applicationId "com.aevi.example.print"
+        minSdkVersion projectMinSdkVersion
+        targetSdkVersion projectTargetSdkVersion
+        versionCode 1
+        versionName "1.0.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    if (project.hasProperty('keystore_path')) {
+        signingConfigs {
+
+            debug {
+                storeFile file("${keystore_path}")
+                storePassword "${keystore_key_password}"
+                keyAlias "application"
+                keyPassword "${keystore_key_password}"
+            }
+            release {
+                storeFile file("${keystore_path}")
+                storePassword "${keystore_key_password}"
+                keyAlias "application"
+                keyPassword "${keystore_key_password}"
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (project.hasProperty('keystore_path')) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/rxjava.properties'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile project(':print-api')
+
+    compile domainDependencies.rxJava
+    compile domainDependencies.rxAndroid
+
+    compile presentationDependencies.butterKnife
+    annotationProcessor aptDependencies.butterKnife
+
+    compile(presentationDependencies.support) { force = true }
+    compile(presentationDependencies.appCompat) { force = true }
+
+    testCompile testDependencies.junit
+}

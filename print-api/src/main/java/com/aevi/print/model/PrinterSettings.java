@@ -27,7 +27,8 @@ public class PrinterSettings extends SendableId {
 
     private final String printerId;
     private final int paperWidth;
-    private final int printerResolution;
+    private final int printableWidth;
+    private final float paperDotsPmm;
     private final PaperKind paperKind;
     private final String[] commands;
     private final int[] codepages;
@@ -35,14 +36,17 @@ public class PrinterSettings extends SendableId {
     private final boolean canHandleCommands;
     private final boolean doesReportStatus;
     private final boolean doesSupportCodepages;
+    private final String[] supportedLanguages;
 
-    PrinterSettings(String printerId, int paperWidth, int printerResolution, PaperKind paperKind,
-                    boolean canHandleCommands,
-                    String[] commands,
+    private final PrinterFont[] printerFonts;
+
+    PrinterSettings(String printerId, int paperWidth, int printableWidth, float paperDotsPmm,
+                    PaperKind paperKind, PrinterFont[] printerFonts,
+                    boolean canHandleCommands, String[] commands,
                     boolean doesReportStatus,
-                    int[] codepages,
-                    boolean doesSupportCodepages,
-                    Map<String, String> options) {
+                    int[] codepages, boolean doesSupportCodepages,
+                    Map<String, String> options,
+                    String[] supportedLanguages) {
 
         if (printerId == null) {
             throw new IllegalArgumentException("printerId must not be null");
@@ -54,7 +58,8 @@ public class PrinterSettings extends SendableId {
 
         this.printerId = printerId;
         this.paperWidth = paperWidth;
-        this.printerResolution = printerResolution;
+        this.printableWidth = printableWidth;
+        this.paperDotsPmm = paperDotsPmm;
         this.paperKind = paperKind;
         this.commands = commands;
         this.codepages = codepages;
@@ -62,6 +67,8 @@ public class PrinterSettings extends SendableId {
         this.canHandleCommands = canHandleCommands;
         this.doesReportStatus = doesReportStatus;
         this.doesSupportCodepages = doesSupportCodepages;
+        this.printerFonts = printerFonts;
+        this.supportedLanguages = supportedLanguages;
     }
 
     /**
@@ -74,12 +81,30 @@ public class PrinterSettings extends SendableId {
     }
 
     /**
-     * Gets the width of the paper in millimeters.
+     * Gets the width of the paper in mm.
      *
-     * @return the width of the paper in millimeters.
+     * @return the width of the paper in mm.
      */
     public int getPaperWidth() {
         return paperWidth;
+    }
+
+    /**
+     * Gets the actual available printing width in mm. This is usually the width of the paper minus any left/right margins
+     *
+     * @return The available printing width in mm
+     */
+    public int getPrintableWidth() {
+        return printableWidth;
+    }
+
+    /**
+     * Gets the resolution of the printer in dots per mm (dpmm).
+     *
+     * @return the dots per mm this printer has for the given paper size above.
+     */
+    public float getPaperDotsPerMm() {
+        return paperDotsPmm;
     }
 
     /**
@@ -92,12 +117,12 @@ public class PrinterSettings extends SendableId {
     }
 
     /**
-     * Gets the resolution of the printer in DPI.
+     * Gets a list of fonts this printer supports
      *
-     * @return the resolution of the printer in DPI.
+     * @return A List of printer fonts
      */
-    public int getPrinterResolution() {
-        return printerResolution;
+    public PrinterFont[] getPrinterFonts() {
+        return printerFonts;
     }
 
     /**
@@ -146,6 +171,15 @@ public class PrinterSettings extends SendableId {
      */
     public boolean doesReportPrinterStatus() {
         return doesReportStatus;
+    }
+
+    /**
+     * Returns a list of two letter (ISO 639) language codes that are supported by this printer
+     *
+     * @return A list of two letter ISO 639 codes
+     */
+    public String[] getSupportedLanguages() {
+        return supportedLanguages;
     }
 
     @Override

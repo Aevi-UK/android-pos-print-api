@@ -34,8 +34,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @RunWith(RobolectricTestRunner.class)
 public class PrintManagerImplTest {
 
-    private static final String PRINT_SERVICE_PACKAGE = "com.aevi.print";
-    private static final String PRINT_MESSENGER_SERVICE_CLASS = "com.aevi.print.PrinterMessagingService";
+    private static final String PRINT_SERVICE_PACKAGE = "com.aevi.print.service";
+    private static final String PRINT_MESSENGER_SERVICE_CLASS = "com.aevi.print.service.PrinterMessagingService";
 
     private PrinterManager printerManager;
 
@@ -64,9 +64,7 @@ public class PrintManagerImplTest {
         ShadowApplication shadowApplication = ShadowApplication.getInstance();
         MockMessageService mockMessageService = new MockMessageService();
 
-        shadowApplication
-                .setComponentNameAndServiceForBindService(new ComponentName(PRINT_SERVICE_PACKAGE, PRINT_MESSENGER_SERVICE_CLASS),
-                        mockMessageService.onBind(null));
+        shadowApplication.setComponentNameAndServiceForBindService(new ComponentName(PRINT_SERVICE_PACKAGE, PRINT_MESSENGER_SERVICE_CLASS), mockMessageService.onBind(null));
 
         Intent intent = new Intent();
         intent.setComponent(new ComponentName(PRINT_SERVICE_PACKAGE, PRINT_MESSENGER_SERVICE_CLASS));

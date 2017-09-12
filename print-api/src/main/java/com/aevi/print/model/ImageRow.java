@@ -26,6 +26,7 @@ public class ImageRow implements PrintRow {
     public static final int DEFAULT_CONTRAST_LEVEL = 50;
 
     private Bitmap image;
+    private boolean scaleToFit;
     private Alignment alignment = Alignment.LEFT;
     private int contrastLevel = DEFAULT_CONTRAST_LEVEL;
 
@@ -33,14 +34,34 @@ public class ImageRow implements PrintRow {
      * Creates a left aligned image row at normal contrast (50) with the given
      * bitmap.
      *
+     * NOTE: If the (unscaled) image is too large to print onto the page it <strong>will</strong> be scaled by the printer driver to fit the width.
+     *
      * @param image the image to print. This parameter must not be null.
      */
     public ImageRow(Bitmap image) {
+        this(image, true);
+    }
+
+    /**
+     * Creates a left aligned image row at normal contrast (50) with the given
+     * bitmap.
+     *
+     * @param image      the image to print. This parameter must not be null.
+     * @param scaleToFit If true the image will be scaled down to fit the page if it is too large. If false the image will be cropped.
+     */
+    public ImageRow(Bitmap image, boolean scaleToFit) {
         if (image == null) {
             throw new IllegalArgumentException("image must not be null");
         }
-
+        this.scaleToFit = scaleToFit;
         this.image = image;
+    }
+
+    /**
+     * @return True if this image should be scaled to fit the full width of the output paper.
+     */
+    public boolean isScaleToFit() {
+        return scaleToFit;
     }
 
     /**

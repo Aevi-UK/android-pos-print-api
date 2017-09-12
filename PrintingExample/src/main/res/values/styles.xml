@@ -1,0 +1,22 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:spinnerStyle">@style/AppSpinner</item>
+        <item name="android:spinnerItemStyle">@style/TextViewSpinnerItem</item>
+    </style>
+
+    <style name="AppSpinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:dropDownVerticalOffset">?attr/actionBarSize</item>
+        <item name="android:background">@drawable/spinner_bg</item>
+    </style>
+
+    <style name="TextViewSpinnerItem" parent="Widget.AppCompat.TextView.SpinnerItem">
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
+        <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
+    </style>
+
+</resources>

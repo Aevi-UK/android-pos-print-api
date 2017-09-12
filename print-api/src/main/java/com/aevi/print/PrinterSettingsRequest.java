@@ -16,7 +16,7 @@ package com.aevi.print;
 import com.aevi.android.rxmessenger.JsonConverter;
 import com.aevi.android.rxmessenger.SendableId;
 
-class PrinterSettingsRequest extends SendableId {
+public class PrinterSettingsRequest extends SendableId {
 
     private static final String ALL = "all";
     private static final String DEFAULT = "default";
