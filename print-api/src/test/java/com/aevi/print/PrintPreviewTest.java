@@ -50,14 +50,40 @@ public class PrintPreviewTest {
             .withNumColumns(64)
             .build();
 
+    private static final PrinterFont FONT_C = new TestPrinterFontBuilder()
+            .withId(3)
+            .withName("Font C")
+            .withSupportedFontStyles(FontStyle.values())
+            .withHeight(17)
+            .withWidth(9)
+            .withLineHeight(25)
+            .withIsDefault(false)
+            .withNumColumns(64)
+            .build();
+
     private static final PrinterFont[] DEFAULT_FONTS = new PrinterFont[]{
             FONT_A,
             FONT_B
     };
 
+    private static final PrinterFont[] NO_DEFAULT_FONTS = new PrinterFont[]{
+            FONT_B,
+            FONT_C
+    };
+
     private PrinterSettings getPrinterSettings() {
         return new TestPrinterSettingsBuilder("TestPrinterSettings", 80, 75, 7.68f)
                 .withPrinterFonts(DEFAULT_FONTS)
+                .withPaperKind(PaperKind.THERMAL)
+                .withDoesReportStatus(true)
+                .withCanHandleCommands(true)
+                .withDoesSupportCodepages(false)
+                .build();
+    }
+
+    private PrinterSettings getPrinterSettingsNoDefaultFont() {
+        return new TestPrinterSettingsBuilder("TestPrinterSettings", 80, 75, 7.68f)
+                .withPrinterFonts(NO_DEFAULT_FONTS)
                 .withPaperKind(PaperKind.THERMAL)
                 .withDoesReportStatus(true)
                 .withCanHandleCommands(true)
@@ -87,6 +113,15 @@ public class PrintPreviewTest {
 
         assertThat(printPreview.defaultFont).isNotNull();
         assertThat(printPreview.defaultFont).isEqualTo(FONT_A);
+    }
+
+    @Test
+    public void doesSetupFirstFontCorrectlyWhenNoDefaultSpecified() {
+        PrintPayload payload = new PrintPayload();
+        PrintPreview printPreview = new PrintPreview(payload, getPrinterSettingsNoDefaultFont());
+
+        assertThat(printPreview.defaultFont).isNotNull();
+        assertThat(printPreview.defaultFont).isEqualTo(FONT_B);
     }
 
     @Test
