@@ -56,7 +56,10 @@ printPayload.appendEmptyLine();
 
 ```
 
-`PrintPayload` objects can be used to configure most textual print layouts you would expect a receipt printer to handle. This includes standard styles such as EMPHASIZED, INVERTED etc and alignment e.g. LEFT, RIGHT. See the javadocs for a full list of styles.
+`PrintPayload` objects can be used to configure most textual print layouts you would expect a receipt printer to handle.
+This includes standard styles such as EMPHASIZED, INVERTED etc and alignment e.g. LEFT, RIGHT. See the javadocs for a full list of styles.
+
+### Adding images
 
 ```java
 Bitmap logo = BitmapFactory.decodeResource(context.getResources(),
@@ -65,6 +68,10 @@ printPayload.appendEmptyLine();
 printPayload.append(logo).align(Alignment.CENTER);
 ```
 
-Images can also be added to the `PrintPayload` as shown in the example.
+Images can also be added to the `PrintPayload` as shown in the example. By default images added will be scaled to fit the width of the printer paper.
+However, you can also choose that the image added is clipped to the width of the paper and not scaled by setting the `scaleToFit` parameter to false
+when calling `PrintPayload.append(Bitmap bitmap, boolean scaleToFit)`.
 
-> NOTE: the total size of the `PrintPayload` should not exceed 1MB so that it can be sent via Android Binder mechanisms.
+> NOTE: the total size of the `PrintPayload` should not exceed 1MB so that it can be sent via Android Binder mechanisms. Images will be encoded as
+WEBM format and compressed slightly when sent between the print service and the printer driver.
+

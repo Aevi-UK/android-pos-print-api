@@ -17,10 +17,31 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
+    if (project.hasProperty('keystore_path')) {
+        signingConfigs {
+
+            debug {
+                storeFile file("${keystore_path}")
+                storePassword "${keystore_key_password}"
+                keyAlias "application"
+                keyPassword "${keystore_key_password}"
+            }
+            release {
+                storeFile file("${keystore_path}")
+                storePassword "${keystore_key_password}"
+                keyAlias "application"
+                keyPassword "${keystore_key_password}"
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (project.hasProperty('keystore_path')) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 
