@@ -1,5 +1,6 @@
 package com.aevi.print;
 
+import android.graphics.Bitmap;
 import android.os.Build;
 
 import com.aevi.print.model.FontStyle;
@@ -14,7 +15,10 @@ import com.aevi.print.model.TextRow;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowBitmap;
 
 import java.util.List;
 
@@ -51,7 +55,7 @@ public class PrintPreviewTest {
             FONT_B
     };
 
-    public PrinterSettings getPrinterSettings() {
+    private PrinterSettings getPrinterSettings() {
         return new TestPrinterSettingsBuilder("TestPrinterSettings", 80, 75, 7.68f)
                 .withPrinterFonts(DEFAULT_FONTS)
                 .withPaperKind(PaperKind.THERMAL)
@@ -59,6 +63,79 @@ public class PrintPreviewTest {
                 .withCanHandleCommands(true)
                 .withDoesSupportCodepages(false)
                 .build();
+    }
+
+    private PrinterSettings getPrinterSettingsNoFonts() {
+        return new TestPrinterSettingsBuilder("TestPrinterSettings", 80, 75, 7.68f)
+                .withPaperKind(PaperKind.THERMAL)
+                .build();
+    }
+
+    private PrintPreview setupValidPrintPreview(boolean withFonts) {
+        PrintPayload payload = new PrintPayload();
+        payload.append("Some text");
+        if (withFonts) {
+            return new PrintPreview(payload, getPrinterSettings());
+        } else {
+            return new PrintPreview(payload, getPrinterSettingsNoFonts());
+        }
+    }
+
+    @Test
+    public void doesSetupDefaultFontCorrectly() {
+        PrintPreview printPreview = setupValidPrintPreview(true);
+
+        assertThat(printPreview.defaultFont).isNotNull();
+        assertThat(printPreview.defaultFont).isEqualTo(FONT_A);
+    }
+
+    @Test
+    public void doesSetupDefaultFontCorrectlyNoFonts() {
+        PrintPreview printPreview = setupValidPrintPreview(false);
+
+        assertThat(printPreview.defaultFont).isNotNull();
+        assertThat(printPreview.defaultFont).isEqualTo(PrintPreview.UNKNOWN_FONT);
+    }
+
+    @Test
+    public void canDetermineHeight() {
+        PrintPayload payload = new PrintPayload();
+        payload.append("Line1");
+        payload.append("Line2");
+        payload.append("Line3");
+        payload.append("Line4");
+        PrintPreview printPreview = new PrintPreview(payload, getPrinterSettings());
+
+        assertThat(printPreview.determineHeight()).isEqualTo(144);
+    }
+
+    @Test
+    public void canGetBitmap() {
+        PrintPreview printPreview = setupValidPrintPreview(true);
+
+        ShadowBitmap bitmap = Shadows.shadowOf(printPreview.getBitmap());
+        assertThat(bitmap).isNotNull();
+        assertThat(bitmap.getDescription()).isEqualTo("Bitmap for Bitmap (576 x 48)\n" +
+                "Bitmap (9 x 32) compressed as PNG with quality 0");
+        assertThat(printPreview.availableWidth).isEqualTo(576);
+    }
+
+    @Test
+    public void canGetScaledBitmap() {
+        PrintPreview printPreview = setupValidPrintPreview(true);
+
+        ShadowBitmap bitmap = Shadows.shadowOf(printPreview.getScaledBitmap(RuntimeEnvironment.application));
+        assertThat(bitmap).isNotNull();
+        assertThat(bitmap.getDescription()).isEqualTo("Bitmap for Bitmap (576 x 48)\n" +
+                "Bitmap (9 x 32) compressed as PNG with quality 0 scaled to 708 x 708 with filter true");
+    }
+
+    @Test
+    public void handlesNoFonts() {
+        PrintPreview printPreview = setupValidPrintPreview(false);
+
+        Bitmap bitmap = printPreview.getScaledBitmap(RuntimeEnvironment.application);
+        assertThat(bitmap).isNotNull();
     }
 
     @Test

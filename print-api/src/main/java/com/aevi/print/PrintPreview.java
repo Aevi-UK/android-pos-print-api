@@ -46,20 +46,22 @@ public final class PrintPreview {
     // margin used to add some padding between images and at the start/end of the print preview
     private static final int VERTICAL_MARGIN = 8;
     // font to be used for preview if printer driver returns no font details
-    private static final PrinterFont UNKNOWN_FONT =
+    protected static final PrinterFont UNKNOWN_FONT =
             new PrinterFont(PrinterFont.DEFAULT_FONT, "Unknown font", 12, 24, true, 48, 32, FontStyle.values());
 
     private final PrintPayload printPayload;
     private final PrinterSettings printerSettings;
     private final Canvas canvas;
     private final Bitmap bitmap;
-    private final int availableWidth;
+    protected final int availableWidth;
+    protected PrinterFont defaultFont;
     private int cursor;
 
     public PrintPreview(PrintPayload printPayload, PrinterSettings printerSettings) {
         this.availableWidth = Math.round(printerSettings.getPaperDotsPerMm() * printerSettings.getPrintableWidth());
         this.printPayload = printPayload;
         this.printerSettings = printerSettings;
+        setupDefaultFont();
         bitmap = Bitmap.createBitmap(availableWidth, determineHeight(), Bitmap.Config.ARGB_8888);
         canvas = new Canvas(bitmap);
         fillBitmap();
@@ -168,7 +170,27 @@ public final class PrintPreview {
         return height + VERTICAL_MARGIN * 2;
     }
 
+    private void setupDefaultFont() {
+        PrinterFont[] fonts = printerSettings.getPrinterFonts();
+        if (fonts != null && fonts.length > 0) {
+            for (PrinterFont font : printerSettings.getPrinterFonts()) {
+                if (font.isDefault()) {
+                    defaultFont = font;
+                    return;
+                }
+            }
+            defaultFont = fonts[0];
+            return;
+        }
+        defaultFont = UNKNOWN_FONT;
+    }
+
     private PrinterFont getFont(int printerFontId) {
+
+        if(printerFontId == PrinterFont.DEFAULT_FONT) {
+            return defaultFont;
+        }
+
         if (printerSettings.getPrinterFonts() != null) {
             for (PrinterFont font : printerSettings.getPrinterFonts()) {
                 if (font.getId() == printerFontId) {
