@@ -47,3 +47,4 @@ general:
   artifacts:
     - "documentation/public"
     - "print-api/build/docs/javadoc"
+    - "PrintingExample/build/outputs/apk/PrintingExample-release.apk"

@@ -25,17 +25,17 @@ Therefore, in your main gradle.build you'll need to include our public bintray i
 repositories section.
 
 ```
-    repositories {
-        maven {
-            url "http://dl.bintray.com/aevi/aevi-uk"
-        }
+repositories {
+    maven {
+        url "http://dl.bintray.com/aevi/aevi-uk"
     }
+}
 ```
 
 And then add to your dependencies section
 
 ```
-compile 'com.aevi.print:print-api:0.0.5'
+compile 'com.aevi.print:print-api:1.0.0'
 
 ```
 
