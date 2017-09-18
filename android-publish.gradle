@@ -14,9 +14,15 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
+
+task releaseJar(type: Jar) {
+    from "${project.buildDir}/intermediates/classes/release/"
+}
+
 artifacts {
     archives javadocJar
     archives sourcesJar
+    archives releaseJar
 }
 
 publishing {
@@ -26,6 +32,7 @@ publishing {
             artifactId "${artifactId}"
             version version
 
+            artifact releaseJar
             artifact bundleRelease
             artifact javadocJar
             artifact sourcesJar
