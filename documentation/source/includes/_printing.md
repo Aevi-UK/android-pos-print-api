@@ -15,7 +15,7 @@ if(printerManager.isPrinterServiceAvailable()) {
               @Override
               public void accept(@NonNull PrintJob printResult) throws Exception {
                   // Do something with results here
-                  Log.d(TAG, "Got status from printer: " + printResult.getPrintJobState());
+                  Log.d(TAG, "Got printing result: " + printResult.getPrintJobState());
               }
           }, new Consumer<Throwable>() {
               @Override
