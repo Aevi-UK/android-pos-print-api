@@ -15,7 +15,6 @@ package com.aevi.print;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -73,9 +72,7 @@ public final class PrintPreview {
      * @return A bitmap with width == printer dots
      */
     public Bitmap getBitmap() {
-        cursor = VERTICAL_MARGIN;
-        byte[] bytes = getCompressedBitmap();
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        return bitmap;
     }
 
     /**
@@ -92,12 +89,15 @@ public final class PrintPreview {
         float pxPerMm = metrics.xdpi / 25.4f; // convert from dpi to dpmm
         int width = bitmap.getWidth();
         float scale = (printerSettings.getPrintableWidth() * pxPerMm) / (float) width;
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() * scale), (int) (bitmap.getHeight() * scale), true);
-        bitmap.recycle();
-        return scaledBitmap;
+        return Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() * scale), (int) (bitmap.getHeight() * scale), true);
     }
 
-    private byte[] getCompressedBitmap() {
+    /**
+     * Returns the bitmap as a compressed byte[] at 100% quality encoded in PNG format
+     *
+     * @return A byte[] containing the image data
+     */
+    public byte[] getCompressedBitmap() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 0, out);
         return out.toByteArray();
@@ -187,7 +187,7 @@ public final class PrintPreview {
 
     private PrinterFont getFont(int printerFontId) {
 
-        if(printerFontId == PrinterFont.DEFAULT_FONT) {
+        if (printerFontId == PrinterFont.DEFAULT_FONT) {
             return defaultFont;
         }
 
