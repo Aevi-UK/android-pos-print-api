@@ -150,8 +150,8 @@ public class PrintPreviewTest {
 
         ShadowBitmap bitmap = Shadows.shadowOf(printPreview.getBitmap());
         assertThat(bitmap).isNotNull();
-        assertThat(bitmap.getDescription()).isEqualTo("Bitmap for Bitmap (576 x 48)\n" +
-                "Bitmap (9 x 32) compressed as PNG with quality 0");
+        assertThat(bitmap.getDescription()).isEqualTo("Bitmap (576 x 48)\n" +
+                "Bitmap (9 x 32)");
         assertThat(printPreview.availableWidth).isEqualTo(576);
     }
 
@@ -161,8 +161,8 @@ public class PrintPreviewTest {
 
         ShadowBitmap bitmap = Shadows.shadowOf(printPreview.getScaledBitmap(RuntimeEnvironment.application));
         assertThat(bitmap).isNotNull();
-        assertThat(bitmap.getDescription()).isEqualTo("Bitmap for Bitmap (576 x 48)\n" +
-                "Bitmap (9 x 32) compressed as PNG with quality 0 scaled to 708 x 708 with filter true");
+        assertThat(bitmap.getDescription()).isEqualTo("Bitmap (576 x 48)\n" +
+                "Bitmap (9 x 32) scaled to 708 x 59 with filter true");
     }
 
     @Test
