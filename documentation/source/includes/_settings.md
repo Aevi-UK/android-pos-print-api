@@ -20,7 +20,7 @@ The `PrinterSettings` object contains information about:
 * codepages - The character codepages a printer will accept
 * actions - The actions that can be sent to this printer to perform a task e.g. "cutPaper"
 * options - A `Map` of String key value pairs that describe any printer specific options this printer exposes
-* fonts - A list of fonts the printer supports
+* fonts - A list of fixed width fonts that the printer supports
 * languages - A list of language code supported by the printer. This allows text characters to be sent in different languages if the printer supports it.
 
 The `PrinterSettings` object is a graph of data that contains information about the printer at a given point in time. This data may be updated by the printer driver at any time. In particular this data change could occur in response to a user settings change or perhaps the printer configuration is changed (e.g. different sized paper inserted). Therefore, the `PrinterSettings` object(s) should not be stored permanently or cached. Instead you should subscribe to the settings stream as shown in the example and ensure that if the data is updated you use the latest values.
@@ -37,9 +37,11 @@ The `PrinterSettings` object is a graph of data that contains information about 
 
 ```
 
-A list of fonts available can (optionally) be returned along with the `PrinterSettings` object above. These fonts provide details of the various sizes of text a printer can print at. In particular the `PrinterFont` object contains the number of columns (per line) that can be printed. This is useful in determining table or columnar layouts as well as maximum number of characters per line. If this number of characters is exceeded then each printer driver may choose to truncate or wrap the text sent in the `PrintPayload`.
+A list of fonts available can (optionally) be returned along with the `PrinterSettings` object above. These fonts provide details of the various sizes of fixed width text a printer can print at. In particular the `PrinterFont` object contains the number of columns (per line) that can be printed. This is useful in determining table or columnar layouts as well as maximum number of characters per line. If this number of characters is exceeded then each printer driver may choose to truncate or wrap the text sent in the `PrintPayload`.
 
-> NB: It is assumed that all printers supported will use ONLY monospace fonts.
+<aside class="notice">
+NB: It is assumed that all printers supported will use ONLY monospace fonts.
+</aside>
 
 ### Using fonts
 

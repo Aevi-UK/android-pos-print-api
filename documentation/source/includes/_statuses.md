@@ -18,7 +18,7 @@ Your application can optionally subscribe to printer events. These events can be
 
 Status Code | Meaning
 ---------- | -------
-printerReady | The printer driver has just connected to this printer and is ready to print
+printerReady | The printer driver is connected to this printer and is ready to print
 printerOffline | The printer driver has just disconnected from this printer and is no-longer ready to print
 coverOpened | The cover has been opened on the printer
 outOfPaper | The printer has just run out of paper
