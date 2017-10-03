@@ -66,15 +66,15 @@
       <div class="content">
         <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>The following documents describe how to use the AEVI Printing API. This API allows developers to quickly and easily integrate printing into your Android application. The API allows you to print using any AEVI enabled device and selected printer drivers. Specifically this API is designed for use with receipt/line printer type devices.</p>
 <p>The print API itself makes extensive use of reactive (Rx) based principles. Therefore in the case of the Java API it makes heavy use of the RxJava library. To read more about Rx principles and the RxJava library itself see <a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="external">the documentation here</a>. For the remainder of this documentation it is assumed that the reader is familiar with asynchronous and event-based programming using observable streams.</p>
-<p>Go register at our amazing developer portal here <a href="https://developer.aevi.com/" target="_blank" rel="external">developer portal</a>.</p>
+<p>The javadocs can be downloaded from the GitHub release pages and also see the Printing Example that is part of this project.</p>
+<p>For further information, please see the AEVI community portal <a href="https://community.aevi.com/" target="_blank" rel="external">community portal</a>.</p>
 <h1 id="Getting-started"><a href="#Getting-started" class="headerlink" title="Getting started"></a>Getting started</h1><p>The main entry point to the SDK is to first obtain an instance of the <code>PrintManager</code>. This object can then be used to send print jobs, actions and listen to printer events.</p>
 <blockquote>
 <p>To get an instance of the PrintManager within your application</p>
 </blockquote>
 <pre><code class="highlight java"><div class="line"></div><div class="line">PrinterManager printerManager = PrinterApi.getPrinterManager(<span class="keyword">this</span>);</div></code></pre>
-<p>In order to bind to the printer service your application must also request the permission <code>com.aevi.permission.NGS_PRINT_SERVICE</code></p>
+<p>In order to bind to the printer service your application must add the permission <code>com.aevi.permission.NGS_PRINT_SERVICE</code> to your manifest file.</p>
 <pre><code class="highlight xml"><div class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"com.aevi.permission.NGS_PRINT_SERVICE"</span>/&gt;</span></div></code></pre>
-<aside class="notice"><br>Its is assumed that at this point the application has access to the Android <code>Context</code> this can be the <code>Application</code> or <code>Activity</code> <code>Context</code>. Ideally this code would be contained inside a suitable application scope object such as a Dagger <code>Module</code>.<br></aside>
 
         
           
@@ -90,7 +90,7 @@
               <span class="meta">@Override</span>
               <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(@NonNull PrintJob printResult)</span> <span class="keyword">throws</span> Exception </span>{
                   <span class="comment">// Do something with results here</span>
-                  Log.d(TAG, <span class="string">"Got status from printer: "</span> + printResult.getPrintJobState());
+                  Log.d(TAG, <span class="string">"Got printing result: "</span> + printResult.getPrintJobState());
               }
           }, <span class="keyword">new</span> Consumer&lt;Throwable&gt;() {
               <span class="meta">@Override</span>
@@ -100,7 +100,8 @@
           });
 }
 </code></pre>
-<p>All printing requests require a <code>PrintPayload</code> object to be built, which is described below. Once this object is constructed it is sent to the <code>PrintManager</code> using the <code>print()</code> method. This method must be subscribed too before the payload is sent. You should also check that the printing service is installed and available before calling any print methods as can be seen opposite using the <code>isPrinterServiceAvailable()</code> method.</p>
+<p> Before calling any print methods you should check that the printing service is installed and available as can be seen opposite using the <code>isPrinterServiceAvailable()</code> method.</p>
+<p>All printing requests require a <code>PrintPayload</code> object to be built, which is described below. Once this object is constructed it is sent to the <code>PrintManager</code> using the <code>print()</code> method. This method must be subscribed to before the payload is sent.</p>
 <p>The subscriber should also ensure they are subscribed to any errors that may be thrown during printing. Exceptions are only thrown if an unexpected error is returned by the AEVI print service. The stream of <code>PrintJob</code> objects returned by the print service will indicate success or failure of the print itself.</p>
 <p>By default print jobs will be sent to the default printer. However, prints can also be sent to a specific printer. This is accomplished by setting a <code>printerId</code> in the <code>PrintPayload</code> using the <code>setPrinterId()</code> method. The printerIds for available printers can be obtained via the <code>PrintManager.getPrintersSettings()</code> method. Usage of this method is shown below.</p>
 <h2 id="Building-print-payloads"><a href="#Building-print-payloads" class="headerlink" title="Building print payloads"></a>Building print payloads</h2><pre><code class="java highlight">
@@ -121,16 +122,15 @@ printPayload.appendLeftRight(<span class="number">20</span>, <span class="string
 printPayload.appendLeftRight(<span class="number">20</span>, <span class="string">"Beer"</span>, <span class="string">"$6.00"</span>);
 printPayload.appendEmptyLine();
 </code></pre>
-<p><code>PrintPayload</code> objects can be used to configure most textual print layouts you would expect a receipt printer to handle. This includes standard styles such as EMPHASIZED, INVERTED etc and alignment e.g. LEFT, RIGHT. See the javadocs for a full list of styles.</p>
-<pre><code class="java highlight">Bitmap logo = BitmapFactory.decodeResource(context.getResources(),
+<p><code>PrintPayload</code> objects can be used to configure most textual print layouts you would expect a receipt printer to handle.<br>This includes standard styles such as EMPHASIZED, INVERTED etc and alignment e.g. LEFT, RIGHT. See the javadocs for a full list of styles.</p>
+<h3 id="Adding-images"><a href="#Adding-images" class="headerlink" title="Adding images"></a>Adding images</h3><pre><code class="java highlight">Bitmap logo = BitmapFactory.decodeResource(context.getResources(),
                           R.drawable.yourlogo, bitmapFactoryOptions);
 printPayload.appendEmptyLine();
 printPayload.append(logo).align(Alignment.CENTER);
 </code></pre>
-<p>Images can also be added to the <code>PrintPayload</code> as shown in the example.</p>
-<blockquote>
-<p>NOTE: the total size of the <code>PrintPayload</code> should not exceed 1MB so that it can be sent via Android Binder mechanisms.</p>
-</blockquote>
+<p>Images can also be added to the <code>PrintPayload</code> as shown in the example. By default images added that are larger than the width of the printer paper will be scaled down to fit.<br>However, you can also choose that the image added is clipped to the width of the paper and not scaled by setting the <code>scaleToFit</code> parameter to false<br>when calling <code>PrintPayload.append(Bitmap bitmap, boolean scaleToFit)</code>.</p>
+<aside class="notice"><br>NOTE: the total size of the <code>PrintPayload</code> should not exceed 1MB so that it can be sent via Android Binder mechanisms. Images will be encoded as<br>WEBM format and compressed slightly when sent between the print service and the printer driver.<br></aside>
+
 
           
               <h1 id="Printer-settings"><a href="#Printer-settings" class="headerlink" title="Printer settings"></a>Printer settings</h1><pre><code class="java highlight">printerManager.getPrintersSettings()
@@ -144,13 +144,33 @@ printPayload.append(logo).align(Alignment.CENTER);
 <p>The settings of each printer available to your device can be obtained using the <code>getPrintersSettings()</code> method. This method will return an observable stream of <code>PrinterSettings</code> objects. The <code>PrinterSettings</code> object contains various details about the aspects of the printer and the functionality it provides. Each <code>PrinterSettings</code> object also contains the unique value of the printerId that can be used to refer to a specific printer device.</p>
 <p>The <code>PrinterSettings</code> object contains information about:</p>
 <ul>
-<li>paperwidth - The paper width supported by this printer in mm(??)</li>
-<li>resolution - The resolution this printer prints at</li>
+<li>paperwidth - The paper width supported by this printer in mm</li>
+<li>printableWidth - The maximum width this printer can print on the paper size given above in mm</li>
+<li>dotsPerMm - The number of dots this printer can support per mm (to convert to dpi multiply by 25.4)</li>
 <li>paperkind - The type of paper supported by this printer e.g. THERMAL, NORMAL</li>
 <li>codepages - The character codepages a printer will accept</li>
 <li>actions - The actions that can be sent to this printer to perform a task e.g. “cutPaper”</li>
 <li>options - A <code>Map</code> of String key value pairs that describe any printer specific options this printer exposes</li>
+<li>fonts - A list of fixed width fonts that the printer supports</li>
+<li>languages - A list of language code supported by the printer. This allows text characters to be sent in different languages if the printer supports it.</li>
 </ul>
+<p>The <code>PrinterSettings</code> object is a graph of data that contains information about the printer at a given point in time. This data may be updated by the printer driver at any time. In particular this data change could occur in response to a user settings change or perhaps the printer configuration is changed (e.g. different sized paper inserted). Therefore, the <code>PrinterSettings</code> object(s) should not be stored permanently or cached. Instead you should subscribe to the settings stream as shown in the example and ensure that if the data is updated you use the latest values.</p>
+<h2 id="Printer-fonts"><a href="#Printer-fonts" class="headerlink" title="Printer fonts"></a>Printer fonts</h2><pre><code class="java highlight">
+PrinterFont[] fonts = printerSettings.getPrinterFonts();
+<span class="keyword">if</span>(fonts != <span class="keyword">null</span> &amp;&amp; fonts.length &gt; <span class="number">0</span>) {
+    <span class="keyword">int</span> cols = fonts[<span class="number">0</span>].getNumColumns();
+    <span class="comment">// In this font you can now print `cols` columns of text per line</span>
+}
+</code></pre>
+<p>A list of fonts available can (optionally) be returned along with the <code>PrinterSettings</code> object above. These fonts provide details of the various sizes of fixed width text a printer can print at. In particular the <code>PrinterFont</code> object contains the number of columns (per line) that can be printed. This is useful in determining table or columnar layouts as well as maximum number of characters per line. If this number of characters is exceeded then each printer driver may choose to truncate or wrap the text sent in the <code>PrintPayload</code>.</p>
+<aside class="notice"><br>NB: It is assumed that all printers supported will use ONLY monospace fonts.<br></aside>
+
+<h3 id="Using-fonts"><a href="#Using-fonts" class="headerlink" title="Using fonts"></a>Using fonts</h3><pre><code class="java highlight">
+String tstStr = <span class="string">"Hello World!"</span>;
+PrinterFont font = fonts[<span class="number">0</span>];
+printPayload.append(tstStr, font);
+</code></pre>
+<p>To use a font in your <code>PrintPayload</code> simply call the overloaded <code>append</code> method passing in your text and the font you wish to use. If a font is not passed into the <code>append</code> method then the printer default font will be used.</p>
 
           
               <h1 id="Printer-statuses"><a href="#Printer-statuses" class="headerlink" title="Printer statuses"></a>Printer statuses</h1><pre><code class="java highlight">
@@ -174,20 +194,16 @@ printerManager.status(printerId).subscribe(<span class="keyword">new</span> Cons
 </thead>
 <tbody>
 <tr>
-<td>connected</td>
-<td>The printer driver has just connected to this printer</td>
+<td>printerReady</td>
+<td>The printer driver is connected to this printer and is ready to print</td>
 </tr>
 <tr>
-<td>disconnected</td>
-<td>The printer driver has just disconnected from this printer</td>
+<td>printerOffline</td>
+<td>The printer driver has just disconnected from this printer and is no-longer ready to print</td>
 </tr>
 <tr>
 <td>coverOpened</td>
 <td>The cover has been opened on the printer</td>
-</tr>
-<tr>
-<td>coverClosed</td>
-<td>The cover has been closed on the printer</td>
 </tr>
 <tr>
 <td>outOfPaper</td>
@@ -196,6 +212,34 @@ printerManager.status(printerId).subscribe(<span class="keyword">new</span> Cons
 <tr>
 <td>lowBattery</td>
 <td>The printers battery is low</td>
+</tr>
+<tr>
+<td>mechanicalError</td>
+<td>The printer has mechanically failed in some way</td>
+</tr>
+<tr>
+<td>unrecoverableError</td>
+<td>The printer driver has failed to connect to the printer and cannot recover</td>
+</tr>
+<tr>
+<td>printerOverheated</td>
+<td>The printer has overheated</td>
+</tr>
+<tr>
+<td>wrongPaper</td>
+<td>Wrong paper detected in the printer</td>
+</tr>
+<tr>
+<td>drawerHigh</td>
+<td>If the printer supports a cashdrawer this indicated the drawer electrical output has been set to high</td>
+</tr>
+<tr>
+<td>drawerLow</td>
+<td>If the printer supports a cashdrawer this indicated the drawer electrical output has been set to low</td>
+</tr>
+<tr>
+<td>timeout</td>
+<td>The printer driver timed out while attempting to print</td>
 </tr>
 </tbody>
 </table>
