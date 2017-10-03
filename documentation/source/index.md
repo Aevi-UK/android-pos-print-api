@@ -24,7 +24,10 @@ The following documents describe how to use the AEVI Printing API. This API allo
 
 The print API itself makes extensive use of reactive (Rx) based principles. Therefore in the case of the Java API it makes heavy use of the RxJava library. To read more about Rx principles and the RxJava library itself see [the documentation here](https://github.com/ReactiveX/RxJava). For the remainder of this documentation it is assumed that the reader is familiar with asynchronous and event-based programming using observable streams.
 
-Go register at our amazing developer portal here [developer portal](https://developer.aevi.com/).
+The javadocs can be downloaded from the GitHub release pages and also see the Printing Example that is part of this project.
+
+
+For further information, please see the AEVI community portal [community portal](https://community.aevi.com/).
 
 # Getting started
 
@@ -38,12 +41,9 @@ The main entry point to the SDK is to first obtain an instance of the `PrintMana
 
 ```
 
-In order to bind to the printer service your application must also request the permission `com.aevi.permission.NGS_PRINT_SERVICE`
+In order to bind to the printer service your application must add the permission `com.aevi.permission.NGS_PRINT_SERVICE` to your manifest file.
 
 ```xml
 <uses-permission android:name="com.aevi.permission.NGS_PRINT_SERVICE"/>
 ```
 
-<aside class="notice">
-Its is assumed that at this point the application has access to the Android `Context` this can be the `Application` or `Activity` `Context`. Ideally this code would be contained inside a suitable application scope object such as a Dagger `Module`.
-</aside>
