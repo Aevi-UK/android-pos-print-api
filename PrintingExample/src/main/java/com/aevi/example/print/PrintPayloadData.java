@@ -118,7 +118,6 @@ public class PrintPayloadData {
             }
         }
 
-
         Bitmap image = BitmapFactory.decodeResource(context.getResources(), R.drawable.bwlogotrans);
         printPayload.append(image);
 
@@ -186,7 +185,7 @@ public class PrintPayloadData {
 
         int canvasHeight = 200;
         int margin = 10;
-        int width = printerSettings.getPaperWidth() - 100;
+        int width = paperWidthInDots(printerSettings) - 100;
         Bitmap bitmap = Bitmap.createBitmap(width, canvasHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint();
@@ -215,7 +214,7 @@ public class PrintPayloadData {
     }
 
     private PrintPayload payloadTest5(PrinterSettings printerSettings) {
-        int lineWidth = printerSettings.getPaperWidth();
+        int lineWidth = paperWidthInDots(printerSettings);
         Paint paint = new Paint();
         paint.setTextSize(30);
         //create a bitmap that is higher than the text size
@@ -293,5 +292,9 @@ public class PrintPayloadData {
         PrintPayload printPayload = new PrintPayload();
         printPayload.append(myBitmap);
         return printPayload;
+    }
+
+    private int paperWidthInDots(PrinterSettings printerSettings) {
+        return (int) (printerSettings.getPaperWidth() * printerSettings.getPaperDotsPerMm());
     }
 }

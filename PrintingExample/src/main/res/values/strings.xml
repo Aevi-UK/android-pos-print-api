@@ -27,8 +27,8 @@
     <string name="preview_receipt">Preview</string>
     <string name="print_receipt">Print</string>
 
-    <string name="status_toast_message">Got status from printer: %1$s</string>
-    <string name="failure_toast_message">Got status from printer: %1$s (%2$s)</string>
+    <string name="result_toast_message">Print result: %1$s</string>
+    <string name="failure_toast_message">Print result: %1$s (%2$s)</string>
 
     <string name="printing_with_code_page">Printing with code page</string>
     <string name="preview_code_page_example">Preview code page example</string>

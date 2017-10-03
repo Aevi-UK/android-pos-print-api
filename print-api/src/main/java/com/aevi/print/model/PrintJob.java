@@ -80,6 +80,9 @@ public class PrintJob extends SendableId {
      * @return The reason giving the cause of any failure {@link PrinterMessages}
      */
     public String getFailedReason() {
+        if (failedReason == null) {
+            return "";
+        }
         return failedReason;
     }
 

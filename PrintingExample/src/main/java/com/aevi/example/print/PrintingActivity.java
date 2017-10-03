@@ -112,7 +112,13 @@ public class PrintingActivity extends AppCompatActivity {
         super.onResume();
         printPayloadData = new PrintPayloadData(this);
         enableButtons(false);
+        clearPrinterStatus();
         setupPrintDrivers();
+    }
+
+    private void clearPrinterStatus() {
+        latestPrinterStatus.clear();
+        printerStatusDisplay.setText("");
     }
 
     private void setupPrintDrivers() {
@@ -298,15 +304,11 @@ public class PrintingActivity extends AppCompatActivity {
     private void displayPrintResultMessage(@NonNull PrintJob printResult) {
         if (printResult.getPrintJobState() == PrintJob.State.FAILED) {
             showToastMessage(getString(R.string.failure_toast_message, printResult.getPrintJobState(), printResult.getFailedReason()));
-            Log.d(TAG, "Got status from printer: " + printResult.getPrintJobState() + " : " + printResult.getFailedReason() + " - " + printResult
+            Log.d(TAG, "Printing result: " + printResult.getPrintJobState() + " : " + printResult.getFailedReason()  + " - " + printResult
                     .getDiagnosticMessage());
-            String diagnosticMessage = printResult.getDiagnosticMessage();
-            if (diagnosticMessage != null) {
-                Log.i(TAG, "Got status diagnostic message from printer: " + diagnosticMessage);
-            }
-        } else {
-            showToastMessage(getString(R.string.status_toast_message, printResult.getPrintJobState()));
-            Log.d(TAG, "Got status from printer: " + printResult.getPrintJobState());
+          } else {
+            showToastMessage(getString(R.string.result_toast_message, printResult.getPrintJobState()));
+            Log.d(TAG, "Printing result: " + printResult.getPrintJobState());
         }
     }
 

@@ -15,7 +15,7 @@ if(printerManager.isPrinterServiceAvailable()) {
               @Override
               public void accept(@NonNull PrintJob printResult) throws Exception {
                   // Do something with results here
-                  Log.d(TAG, "Got status from printer: " + printResult.getPrintJobState());
+                  Log.d(TAG, "Got printing result: " + printResult.getPrintJobState());
               }
           }, new Consumer<Throwable>() {
               @Override
@@ -27,7 +27,9 @@ if(printerManager.isPrinterServiceAvailable()) {
 
 ```
 
-All printing requests require a `PrintPayload` object to be built, which is described below. Once this object is constructed it is sent to the `PrintManager` using the `print()` method. This method must be subscribed too before the payload is sent. You should also check that the printing service is installed and available before calling any print methods as can be seen opposite using the `isPrinterServiceAvailable()` method.
+ Before calling any print methods you should check that the printing service is installed and available as can be seen opposite using the `isPrinterServiceAvailable()` method.
+ 
+All printing requests require a `PrintPayload` object to be built, which is described below. Once this object is constructed it is sent to the `PrintManager` using the `print()` method. This method must be subscribed to before the payload is sent.
 
 The subscriber should also ensure they are subscribed to any errors that may be thrown during printing. Exceptions are only thrown if an unexpected error is returned by the AEVI print service. The stream of `PrintJob` objects returned by the print service will indicate success or failure of the print itself.
 
@@ -68,10 +70,12 @@ printPayload.appendEmptyLine();
 printPayload.append(logo).align(Alignment.CENTER);
 ```
 
-Images can also be added to the `PrintPayload` as shown in the example. By default images added will be scaled to fit the width of the printer paper.
+Images can also be added to the `PrintPayload` as shown in the example. By default images added that are larger than the width of the printer paper will be scaled down to fit.
 However, you can also choose that the image added is clipped to the width of the paper and not scaled by setting the `scaleToFit` parameter to false
 when calling `PrintPayload.append(Bitmap bitmap, boolean scaleToFit)`.
 
-> NOTE: the total size of the `PrintPayload` should not exceed 1MB so that it can be sent via Android Binder mechanisms. Images will be encoded as
+<aside class="notice">
+NOTE: the total size of the `PrintPayload` should not exceed 1MB so that it can be sent via Android Binder mechanisms. Images will be encoded as
 WEBM format and compressed slightly when sent between the print service and the printer driver.
+</aside>
 
