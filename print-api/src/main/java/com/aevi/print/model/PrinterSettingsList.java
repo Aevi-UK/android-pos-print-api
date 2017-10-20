@@ -13,10 +13,10 @@
  */
 package com.aevi.print.model;
 
-import com.aevi.android.rxmessenger.JsonConverter;
-import com.aevi.android.rxmessenger.SendableId;
+import com.aevi.print.json.JsonConverter;
+import com.aevi.print.json.Jsonable;
 
-public class PrinterSettingsList extends SendableId {
+public class PrinterSettingsList implements Jsonable {
 
     private final PrinterSettings[] printerSettings;
 

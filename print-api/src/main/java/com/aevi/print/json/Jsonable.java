@@ -11,19 +11,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aevi.print.model;
+package com.aevi.print.json;
 
-import com.aevi.android.rxmessenger.SendableId;
+public interface Jsonable {
 
-public class PrinterStatusRequest extends SendableId {
-
-    private final String printerId;
-
-    public PrinterStatusRequest(String printerId) {
-        this.printerId = printerId;
-    }
-
-    public String getPrinterId() {
-        return printerId;
-    }
+    String toJson();
 }

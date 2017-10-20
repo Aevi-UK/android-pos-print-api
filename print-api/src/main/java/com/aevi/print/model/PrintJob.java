@@ -13,13 +13,13 @@
  */
 package com.aevi.print.model;
 
-import com.aevi.android.rxmessenger.JsonConverter;
-import com.aevi.android.rxmessenger.SendableId;
+import com.aevi.print.json.JsonConverter;
+import com.aevi.print.json.Jsonable;
 
 /**
  * Wrapper class to encapsulate the PrintJob
  */
-public class PrintJob extends SendableId {
+public class PrintJob implements Jsonable {
 
     public enum State {
 

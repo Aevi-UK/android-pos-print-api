@@ -15,10 +15,10 @@ package com.aevi.print.model;
 
 import android.graphics.Bitmap;
 
-import com.aevi.android.rxmessenger.JsonConverter;
-import com.aevi.android.rxmessenger.JsonOption;
-import com.aevi.android.rxmessenger.SendableId;
 import com.aevi.print.PrinterManager;
+import com.aevi.print.json.JsonConverter;
+import com.aevi.print.json.JsonOption;
+import com.aevi.print.json.Jsonable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +31,7 @@ import java.util.List;
  * By binding to the {@link PrinterManager} this pay load can be send to the
  * receipt printer for printing.
  */
-public class PrintPayload extends SendableId {
+public class PrintPayload implements Jsonable {
 
     private List<JsonOption> rows = new ArrayList<>();
 
