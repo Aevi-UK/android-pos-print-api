@@ -13,9 +13,10 @@
  */
 package com.aevi.print.model;
 
-import com.aevi.android.rxmessenger.SendableId;
+import com.aevi.print.json.JsonConverter;
+import com.aevi.print.json.Jsonable;
 
-public class PrintAction extends SendableId {
+public class PrintAction implements Jsonable {
 
     private String printerId;
     private String action;
@@ -31,5 +32,14 @@ public class PrintAction extends SendableId {
 
     public String getAction() {
         return action;
+    }
+
+    @Override
+    public String toJson() {
+        return JsonConverter.serialize(this);
+    }
+
+    public static PrintAction fromJson(String json) {
+        return JsonConverter.deserialize(json, PrintAction.class);
     }
 }

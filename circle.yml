@@ -41,10 +41,9 @@ deployment:
     production:
         branch: master
         commands:
-            - ./gradlew bintrayUpload
+            - ./gradlew javadoc bintrayUpload
 
 general:
   artifacts:
     - "documentation/public"
-    - "print-api/build/docs/javadoc"
     - "PrintingExample/build/outputs/apk/PrintingExample-release.apk"

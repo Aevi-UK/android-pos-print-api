@@ -29,6 +29,10 @@ The javadocs can be downloaded from the GitHub release pages and also see the Pr
 
 For further information, please see the AEVI community portal [community portal](https://community.aevi.com/).
 
+## JavaDocs
+
+Please see [Printing API JavaDocs](javadoc/index.html).
+
 # Getting started
 
 The main entry point to the SDK is to first obtain an instance of the `PrintManager`. This object can then be used to send print jobs, actions and listen to printer events.
@@ -46,4 +50,6 @@ In order to bind to the printer service your application must add the permission
 ```xml
 <uses-permission android:name="com.aevi.permission.NGS_PRINT_SERVICE"/>
 ```
+
+
 
