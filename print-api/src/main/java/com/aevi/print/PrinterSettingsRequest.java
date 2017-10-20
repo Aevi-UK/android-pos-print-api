@@ -13,10 +13,10 @@
  */
 package com.aevi.print;
 
-import com.aevi.android.rxmessenger.JsonConverter;
-import com.aevi.android.rxmessenger.SendableId;
+import com.aevi.print.json.JsonConverter;
+import com.aevi.print.json.Jsonable;
 
-public class PrinterSettingsRequest extends SendableId {
+public class PrinterSettingsRequest implements Jsonable {
 
     private static final String ALL = "all";
     private static final String DEFAULT = "default";

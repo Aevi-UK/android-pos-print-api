@@ -13,15 +13,15 @@
  */
 package com.aevi.print.model;
 
-import com.aevi.android.rxmessenger.JsonConverter;
-import com.aevi.android.rxmessenger.SendableId;
+import com.aevi.print.json.JsonConverter;
+import com.aevi.print.json.Jsonable;
 
 import java.util.Map;
 
 /**
  * Contains information such as name, DPI and paper width for a specific PrinterSettings on the Device.
  */
-public class PrinterSettings extends SendableId {
+public class PrinterSettings implements Jsonable {
 
     public static final String OPTION_DEFAULT = "default";
 

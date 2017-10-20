@@ -140,9 +140,7 @@ public class PrintPayloadTest {
                 + "{\"text\":\"Hello\",\"printerFontId\":-1,\"underline\":\"NONE\",\"fontStyle\":\"NORMAL\",\"alignment\":\"LEFT\"},\"type\":\"com.aevi.print.model.TextRow\"},"
                 + "{\"value\":"
                 + "{\"text\":\"World\",\"printerFontId\":-1,\"underline\":\"NONE\",\"fontStyle\":\"NORMAL\",\"alignment\":\"LEFT\"},\"type\":\"com.aevi.print.model.TextRow\"}],"
-                + "\"codePage\":-1,\"languageCode\":\"fr\",\"id\":\""
-                + payload.getId()
-                + "\"}");
+                + "\"codePage\":-1,\"languageCode\":\"fr\"}");
     }
 
     @Test

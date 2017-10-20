@@ -21,14 +21,12 @@ import android.content.pm.ResolveInfo;
 import android.util.Log;
 
 import com.aevi.android.rxmessenger.ObservableMessengerClient;
-import com.aevi.android.rxmessenger.SendableId;
 import com.aevi.print.model.PrintAction;
 import com.aevi.print.model.PrintJob;
 import com.aevi.print.model.PrintPayload;
 import com.aevi.print.model.PrinterSettings;
 import com.aevi.print.model.PrinterSettingsList;
 import com.aevi.print.model.PrinterStatus;
-import com.aevi.print.model.PrinterStatusRequest;
 
 import java.util.List;
 
@@ -48,44 +46,56 @@ class PrinterManagerImpl implements PrinterManager {
     private static final String PRINTER_STATUS_SERVICE_CLASS = "com.aevi.print.service.PrinterStatusService";
     private static final String PRINTER_ACTION_SERVICE_CLASS = "com.aevi.print.service.PrinterActionService";
 
-    private final ObservableMessengerClient<PrintPayload, PrintJob> printingMessenger;
-    private final ObservableMessengerClient<PrintAction, SendableId> printerActionMessenger;
-    private final ObservableMessengerClient<PrinterSettingsRequest, PrinterSettingsList> printSettingsMessenger;
-    private final ObservableMessengerClient<PrinterStatusRequest, PrinterStatus> printerStatusMessenger;
+    private final ObservableMessengerClient printingMessenger;
+    private final ObservableMessengerClient printerActionMessenger;
+    private final ObservableMessengerClient printSettingsMessenger;
+    private final ObservableMessengerClient printerStatusMessenger;
 
     private final Context context;
 
     PrinterManagerImpl(Context context) {
         this.context = context;
-        printingMessenger = new ObservableMessengerClient<>(context, PrintJob.class);
-        printSettingsMessenger = new ObservableMessengerClient<>(context, PrinterSettingsList.class);
-        printerStatusMessenger = new ObservableMessengerClient<>(context, PrinterStatus.class);
-        printerActionMessenger = new ObservableMessengerClient<>(context, SendableId.class);
+        printingMessenger = new ObservableMessengerClient(context);
+        printSettingsMessenger = new ObservableMessengerClient(context);
+        printerStatusMessenger = new ObservableMessengerClient(context);
+        printerActionMessenger = new ObservableMessengerClient(context);
     }
 
     @Override
     public boolean isPrinterServiceAvailable() {
         PackageManager packageManager = context.getPackageManager();
-        List<ResolveInfo> resolveInfo = packageManager.queryIntentServices(getIntent(PRINT_MESSENGER_SERVICE_CLASS), PackageManager.MATCH_DEFAULT_ONLY);
+        List<ResolveInfo> resolveInfo =
+                packageManager.queryIntentServices(getIntent(PRINT_MESSENGER_SERVICE_CLASS), PackageManager.MATCH_DEFAULT_ONLY);
         return resolveInfo.size() == 1 && resolveInfo.get(0).serviceInfo != null;
     }
 
     @Override
     public Observable<PrintJob> print(final PrintPayload printPayload) {
         Log.d(TAG, "About to send: " + printPayload.toJson());
-        return printingMessenger.createObservableForServiceIntent(getIntent(PRINT_MESSENGER_SERVICE_CLASS), printPayload);
+        return printingMessenger.createObservableForServiceIntent(getIntent(PRINT_MESSENGER_SERVICE_CLASS), printPayload.toJson())
+                .map(new Function<String, PrintJob>() {
+                    @Override
+                    public PrintJob apply(String json) throws Exception {
+                        return PrintJob.fromJson(json);
+                    }
+                });
     }
 
     @Override
     public void sendAction(String printerId, String action) {
         PrintAction printAction = new PrintAction(printerId, action);
-        printerActionMessenger.createObservableForServiceIntent(getIntent(PRINTER_ACTION_SERVICE_CLASS), printAction).take(1).subscribe();
+        printerActionMessenger.createObservableForServiceIntent(getIntent(PRINTER_ACTION_SERVICE_CLASS), printAction.toJson()).take(1).subscribe();
     }
 
     @Override
-    public Observable<PrinterStatus> status(String printerName) {
-        PrinterStatusRequest statusRequest = new PrinterStatusRequest(printerName);
-        return printerStatusMessenger.createObservableForServiceIntent(getIntent(PRINTER_STATUS_SERVICE_CLASS), statusRequest);
+    public Observable<PrinterStatus> status(String printerId) {
+        return printerStatusMessenger.createObservableForServiceIntent(getIntent(PRINTER_STATUS_SERVICE_CLASS), printerId)
+                .map(new Function<String, PrinterStatus>() {
+                    @Override
+                    public PrinterStatus apply(String json) throws Exception {
+                        return PrinterStatus.fromJson(json);
+                    }
+                });
     }
 
     @Override
@@ -111,7 +121,13 @@ class PrinterManagerImpl implements PrinterManager {
     }
 
     private Observable<PrinterSettingsList> getSettingsServiceIntent(PrinterSettingsRequest printerRequest) {
-        return printSettingsMessenger.createObservableForServiceIntent(getIntent(PRINT_SETTINGS_SERVICE_CLASS), printerRequest);
+        return printSettingsMessenger.createObservableForServiceIntent(getIntent(PRINT_SETTINGS_SERVICE_CLASS), printerRequest.toJson())
+                .map(new Function<String, PrinterSettingsList>() {
+                    @Override
+                    public PrinterSettingsList apply(String json) throws Exception {
+                        return PrinterSettingsList.fromJson(json);
+                    }
+                });
     }
 
     private Intent getIntent(String className) {

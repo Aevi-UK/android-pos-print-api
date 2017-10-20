@@ -15,8 +15,7 @@ package com.aevi.print.model;
 
 import android.graphics.Bitmap;
 
-import com.aevi.android.rxmessenger.JsonConverter;
-
+import com.aevi.print.json.JsonConverter;
 
 /**
  * This class represents an image line in a {@link PrintPayload}.
