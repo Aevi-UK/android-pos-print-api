@@ -18,10 +18,7 @@ that will handle the actual print process with the physical devices.
 
 # Binaries
 
-Currently this API is under development and is therefore only published to our own bintray repository.
-When we release v1 of this API we will upload it to jcenter.
-
-Therefore, in your main gradle.build you'll need to include our public bintray in your main
+In your main gradle.build you'll need to include our public bintray in your main
 repositories section.
 
 ```
@@ -35,7 +32,7 @@ repositories {
 And then add to your dependencies section
 
 ```
-compile 'com.aevi.print:print-api:1.0.0'
+compile 'com.aevi.print:print-api:1.1.0'
 
 ```
 
@@ -89,8 +86,10 @@ if(printerManager.isPrinterServiceAvailable()) {
 
 ```
 
-To read more details about how to use the API and how to create more detailed `PrintPayload` objects
-[see our documentation here](https://github.com/Aevi-UK/android-pos-print-api/wiki)
+# Full Documentation
+
+* [Wiki](https://github.com/Aevi-UK/android-pos-print-api/wiki) 
+* [Javadoc](https://aevi-uk.github.io/android-pos-print-api/javadoc/index.html)
 
 # Bugs and Feedback
 

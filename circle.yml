@@ -19,7 +19,6 @@ dependencies:
     - ~/.android
   override:
     - sudo pip install awscli
-    - ./buildDocs.sh
 
 test:
   override:
@@ -45,5 +44,5 @@ deployment:
 
 general:
   artifacts:
-    - "documentation/public"
+    - "/build/documentation/javadoc"
     - "PrintingExample/build/outputs/apk/PrintingExample-release.apk"
