@@ -90,7 +90,7 @@ if(printerManager.isPrinterServiceAvailable()) {
 ```
 
 To read more details about how to use the API and how to create more detailed `PrintPayload` objects
-[see our documentation here](https://aevi-uk.github.io/android-pos-print-api)
+[see our documentation here](https://github.com/Aevi-UK/android-pos-print-api/wiki)
 
 # Bugs and Feedback
 
