@@ -40,9 +40,10 @@ deployment:
     production:
         branch: master
         commands:
-            - ./gradlew javadoc bintrayUpload
+            - ./gradlew build javadoc bintrayUpload
+            - /bin/bash publish-javadocs.sh
 
 general:
   artifacts:
-    - "/build/documentation/javadoc"
+    - "/build/docs/javadoc"
     - "PrintingExample/build/outputs/apk/PrintingExample-release.apk"
