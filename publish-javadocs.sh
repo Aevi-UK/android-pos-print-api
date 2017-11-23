@@ -24,7 +24,7 @@ remote=$(git config remote.origin.url)
 
 rm -f -r $LOCAL_CLONE_DIR
 
-mkdir $LOCAL_CLONE_DIR
+mkdir -p $LOCAL_CLONE_DIR
 cd $LOCAL_CLONE_DIR
 
 git config --global user.name "CircleCI" > /dev/null 2>&1
