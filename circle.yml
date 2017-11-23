@@ -29,6 +29,11 @@ deployment:
         branch: /.*release.*/
         commands:
             - ./gradlew build
+    docs:
+        branch: /.*docs.*/
+        commands:
+            - ./gradlew build
+            - /bin/bash publish-javadocs.sh
     feature:
         branch: /.*feature.*/
         commands:
