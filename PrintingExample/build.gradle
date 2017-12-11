@@ -13,7 +13,7 @@ android {
         minSdkVersion projectMinSdkVersion
         targetSdkVersion projectTargetSdkVersion
         versionCode 4
-        versionName "1.0.3"
+        versionName "1.0.4-SNAPSHOT-lb02"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
