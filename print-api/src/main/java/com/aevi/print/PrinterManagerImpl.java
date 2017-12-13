@@ -83,6 +83,7 @@ class PrinterManagerImpl implements PrinterManager {
 
     @Override
     public void sendAction(String printerId, String action) {
+        Log.d(TAG, "About to send action : " + action);
         PrintAction printAction = new PrintAction(printerId, action);
         printerActionMessenger.createObservableForServiceIntent(getIntent(PRINTER_ACTION_SERVICE_CLASS), printAction.toJson()).take(1).subscribe();
     }

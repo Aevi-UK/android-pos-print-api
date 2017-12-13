@@ -26,6 +26,7 @@
     <string name="status_hint">-- Statuses will appear here when received for printer selected above --</string>
     <string name="preview_receipt">Preview</string>
     <string name="print_receipt">Print</string>
+    <string name="print_open_drawer">Open Drawer</string>
 
     <string name="result_toast_message">Print result: %1$s</string>
     <string name="failure_toast_message">Print result: %1$s (%2$s)</string>

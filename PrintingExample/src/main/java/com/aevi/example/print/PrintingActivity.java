@@ -15,8 +15,10 @@ import android.widget.Toast;
 
 import com.aevi.print.PrinterApi;
 import com.aevi.print.PrinterManager;
+import com.aevi.print.model.PrintAction;
 import com.aevi.print.model.PrintJob;
 import com.aevi.print.model.PrintPayload;
+import com.aevi.print.model.PrinterMessages;
 import com.aevi.print.model.PrinterSettings;
 import com.aevi.print.model.PrinterSettingsList;
 import com.aevi.print.model.PrinterStatus;
@@ -38,6 +40,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.aevi.example.print.PrintPreviewActivity.KEY_PAYLOAD;
 import static com.aevi.example.print.PrintPreviewActivity.KEY_PRINTER_SETTINGS;
+import static com.aevi.print.model.PrinterMessages.ACTION_OPEN_CASH_DRAWER;
 
 public class PrintingActivity extends AppCompatActivity {
 
@@ -64,8 +67,11 @@ public class PrintingActivity extends AppCompatActivity {
                 R.id.button_preview,
                 R.id.button_codepage_preview,
                 R.id.button_codepage_print,
-                R.id.button_cut_paper})
+                R.id.button_open_drawer})
     List<Button> buttons;
+
+    @BindView(R.id.button_open_drawer)
+    Button openDrawerButton;
 
     @BindView(R.id.codepages)
     ViewGroup codepagesLayout;
@@ -228,12 +234,23 @@ public class PrintingActivity extends AppCompatActivity {
             }
             subscribeToPrinterStatus(selectedPrinter.getPrinterId());
 
-            if (selectedPrinter.doesSupportCodePages()) {
-                codepagesLayout.setVisibility(View.VISIBLE);
-            } else {
-                codepagesLayout.setVisibility(View.GONE);
+            codepagesLayout.setVisibility(selectedPrinter.doesSupportCodePages()? View.VISIBLE: View.GONE);
+            openDrawerButton.setEnabled(doesSupportCashDrawer());
+        }
+    }
+
+    private boolean doesSupportCashDrawer() {
+        if (selectedPrinter.canHandleCommands()) {
+            String[] commands = selectedPrinter.getCommands();
+            if (commands!= null) {
+                for (String command : commands) {
+                    if (ACTION_OPEN_CASH_DRAWER.equals(command)) {
+                        return true;
+                    }
+                }
             }
         }
+        return false;
     }
 
     @OnClick(R.id.button_print)
@@ -244,6 +261,11 @@ public class PrintingActivity extends AppCompatActivity {
     @OnClick(R.id.button_preview)
     public void previewClick(View view) {
         showPreview(getPrintPayload());
+    }
+
+    @OnClick(R.id.button_open_drawer)
+    public void cashOpenDrawerClick(View view) {
+        sendAction(ACTION_OPEN_CASH_DRAWER);
     }
 
     @OnClick(R.id.button_codepage_print)
@@ -299,6 +321,16 @@ public class PrintingActivity extends AppCompatActivity {
                         Log.e(TAG, "Error while printing", throwable);
                     }
                 });
+    }
+
+    private void sendAction(String action) {
+        if (!printerManager.isPrinterServiceAvailable()) {
+            Log.i(TAG, "Print manager is not installed or disabled");
+            return;
+        }
+
+        Log.i(TAG, String.format("Sending action '%s' to printer with driver: %s", action, selectedPrinter.getPrinterId()));
+        printerManager.sendAction(selectedPrinter.getPrinterId(), action);
     }
 
     private void displayPrintResultMessage(@NonNull PrintJob printResult) {
