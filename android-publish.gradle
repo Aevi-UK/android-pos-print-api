@@ -5,10 +5,19 @@ task sourcesJar(type: Jar) {
     classifier = 'sources'
 }
 
+configurations {
+    javadoc_extra_jars
+}
+
+dependencies {
+    javadoc_extra_jars "${domainDependencies.rxJava}@jar"
+}
+
 task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    destinationDir = file("${rootProject.rootDir}/documentation/public/javadoc")
+    classpath += files(configurations.javadoc_extra_jars.files)
+    destinationDir = file("${rootProject.rootDir}/build/docs/javadoc")
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {

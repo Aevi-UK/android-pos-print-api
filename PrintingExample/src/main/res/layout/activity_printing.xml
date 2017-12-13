@@ -88,9 +88,16 @@
                         android:layout_height="wrap_content"
                         android:enabled="false"
                         android:text="@string/print_receipt"/>
+
+                    <Button
+                        android:id="@+id/button_open_drawer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:text="@string/print_open_drawer"/>
+
                 </LinearLayout>
             </LinearLayout>
-
 
             <LinearLayout
                 android:id="@+id/codepages"
@@ -136,12 +143,5 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
-    <Button
-        android:id="@+id/button_cut_paper"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="CUT THE PAPER"/>
 
 </LinearLayout>

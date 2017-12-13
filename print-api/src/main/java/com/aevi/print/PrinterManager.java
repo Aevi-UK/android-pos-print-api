@@ -42,7 +42,7 @@ public interface PrinterManager {
      * Send an action to a printer
      *
      * @param printerId The id of the printer to send the action to
-     * @param action    The action to perform
+     * @param action    The action to perform (see {@link PrinterSettings#getCommands() for a list of commands the printer supports}
      */
     void sendAction(String printerId, String action);
 
