@@ -1,23 +1,32 @@
 buildscript {
     repositories {
         jcenter()
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.0.1'
     }
 }
 
 allprojects {
 
     repositories {
-        mavenLocal()
         jcenter()
         mavenCentral()
-        maven {
-            url "https://maven.google.com"
-        }
+        google()
         maven {
             url  "http://dl.bintray.com/aevi/aevi-uk"
+        }
+        mavenLocal()
+
+        if (project.hasProperty('aws_accessid')) {
+            maven {
+                url "s3://sdk-snapshots.aevi.com/maven2"
+                credentials(AwsCredentials) {
+                    accessKey aws_accessid
+                    secretKey aws_accesskey
+                }
+            }
         }
     }
 }

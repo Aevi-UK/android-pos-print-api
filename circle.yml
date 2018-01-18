@@ -10,7 +10,7 @@ machine:
 dependencies:
   pre:
     - echo y | android update sdk --no-ui --all --filter tools,platform-tools,android-26
-    - echo y | android update sdk --no-ui --all --filter build-tools-26.0.0
+    - echo y | android update sdk --no-ui --all --filter build-tools-26.0.2
     - echo y | android update sdk --filter "extra-android-m2repository" --no-ui
     - echo y | android update sdk --filter "extra-android-support" --no-ui
     - echo y | android update sdk --filter "extra-google-m2repository" --no-ui

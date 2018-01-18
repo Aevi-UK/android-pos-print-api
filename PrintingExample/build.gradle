@@ -13,7 +13,7 @@ android {
         minSdkVersion projectMinSdkVersion
         targetSdkVersion projectTargetSdkVersion
         versionCode 5
-        versionName "1.0.4"
+        versionName "1.0.5-SNAPSHOT"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -53,18 +53,18 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile project(':print-api')
+    implementation project(':print-api')
 
-    compile domainDependencies.rxJava
-    compile domainDependencies.rxAndroid
+    implementation domainDependencies.rxJava
+    implementation domainDependencies.rxAndroid
 
-    compile presentationDependencies.butterKnife
+    implementation presentationDependencies.butterKnife
     annotationProcessor aptDependencies.butterKnife
 
-    compile(presentationDependencies.support) { force = true }
-    compile(presentationDependencies.appCompat) { force = true }
+    implementation(presentationDependencies.support) { force = true }
+    implementation(presentationDependencies.appCompat) { force = true }
 
-    testCompile testDependencies.junit
+    testImplementation testDependencies.junit
 }
