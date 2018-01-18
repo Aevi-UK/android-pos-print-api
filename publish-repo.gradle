@@ -1,0 +1,16 @@
+apply plugin: 'maven-publish'
+
+publishing {
+    repositories {
+        if (project.hasProperty('aws_accessid')) {
+            maven {
+                name 'snapshot'
+                url "s3://sdk-snapshots.aevi.com/maven2"
+                credentials(AwsCredentials) {
+                    accessKey "${aws_accessid}"
+                    secretKey "${aws_accesskey}"
+                }
+            }
+        }
+    }
+}
