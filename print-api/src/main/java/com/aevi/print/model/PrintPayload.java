@@ -74,6 +74,7 @@ public class PrintPayload implements Jsonable {
      *
      * @param text        The text to add
      * @param printerFont The printer font to use
+     * @return The new {@link TextRow} object added to the payload
      */
     public TextRow append(String text, PrinterFont printerFont) {
         if (text == null) {

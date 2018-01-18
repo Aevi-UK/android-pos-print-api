@@ -1,11 +1,12 @@
 ext {
 
-    androidBuildVersion = "26.0.0"
+    androidBuildVersion = "26.0.2"
     projectTargetSdkVersion = 26
     projectMinSdkVersion = 22
 
     rxAndroidVersion = '2.0.1'
     rxJavaVersion = '2.1.0'
+    gsonVersion = '2.8.0'
     rxMessengerVersion = '2.0.1-SNAPSHOT'
 
     junitVersion = '4.12'
@@ -13,7 +14,7 @@ ext {
     robolectricVersion = '3.3.2'
     assertJVersion = '2.7.0'
 
-    butterKnifeVersion = '8.5.1'
+    butterKnifeVersion = '8.8.1'
     supportLibrary = '26.0.0'
 
     presentationDependencies = [
@@ -27,6 +28,7 @@ ext {
             rxMessenger: "com.aevi.android:rxmessenger:$rxMessengerVersion",
             rxJava     : "io.reactivex.rxjava2:rxjava:$rxJavaVersion",
             rxAndroid  : "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion",
+            gson       : "com.google.code.gson:gson:$gsonVersion",
     ]
 
     testDependencies = [
