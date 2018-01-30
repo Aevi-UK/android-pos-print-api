@@ -25,14 +25,11 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-task releaseJar(type: Jar) {
-    from "${project.buildDir}/intermediates/classes/release/"
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-    archives releaseJar
+android.libraryVariants.all { variant ->
+    def task = project.tasks.create "jar${name.capitalize()}", Jar
+    task.dependsOn variant.javaCompile
+    task.from variant.getJavaCompiler().destinationDir
+    artifacts.add('archives', task);
 }
 
 publishing {
@@ -42,7 +39,7 @@ publishing {
             artifactId "${artifactId}"
             version version
 
-            artifact releaseJar
+            artifact jarRelease
             artifact bundleRelease
             artifact javadocJar
             artifact sourcesJar

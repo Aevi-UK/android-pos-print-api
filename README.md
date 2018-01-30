@@ -32,8 +32,7 @@ repositories {
 And then add to your dependencies section
 
 ```
-compile 'com.aevi.print:print-api:1.1.0'
-
+implementation 'com.aevi.print:print-api:1.1.0'
 ```
 
 # Sample usage
@@ -46,7 +45,6 @@ can then be used to send print jobs, actions and listen to printer events.
 ```java
 
       PrinterManager printerManager = PrinterApi.getPrinterManager(this);
-
 ```
 
 In order to bind to the printer service your application must also request the
