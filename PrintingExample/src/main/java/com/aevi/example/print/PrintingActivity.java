@@ -190,7 +190,7 @@ public class PrintingActivity extends AppCompatActivity {
                         printerSettingsList = printerSettings.getPrinterSettings();
                         List<String> printerNames = new ArrayList<>();
                         for (PrinterSettings printerSetting : printerSettingsList) {
-                            printerNames.add(printerSetting.getPrinterId());
+                            printerNames.add(printerSetting.getDisplayName());
                         }
                         Log.d(TAG, "Got printer settings list: " + printerSettingsList.length);
                         driversSpinner.setAdapter(new ArrayAdapter<>(PrintingActivity.this,

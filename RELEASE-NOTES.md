@@ -1,5 +1,10 @@
 ## Release Notes for the AEVI Android POS printer api
 
+## Version 1.1.2-SNAPSHOT
+
+* Added `PrinterSettings.getDisplayName` for the name that gets shown to the user.
+* Update underlying rx-messenger library to v3.0.0
+
 ## Version 1.1.1
 
 * Updated the PrintingExample to include open cash drawer code
