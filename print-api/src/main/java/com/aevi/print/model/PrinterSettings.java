@@ -74,16 +74,16 @@ public class PrinterSettings implements Jsonable {
     }
 
     /**
-     * Gets the unique Id of this printer.
+     * Gets the unique ID of this printer.
      *
-     * @return the id of the printer, must be unique.
+     * @return the ID of the printer, must be unique.
      */
     public String getPrinterId() {
         return printerId;
     }
 
     /**
-     * Gets a the printer name that will be displayed to the users. If this has not been set the printer Id will be used
+     * Gets the printer name that will be displayed to the users. If this has not been set the printer ID will be used
      *
      * @return the display name of the printer.
      */
@@ -95,9 +95,10 @@ public class PrinterSettings implements Jsonable {
     }
 
     /**
-     * Sets a the printer name that will be displayed to the users.
+     * Sets the printer name that will be displayed to the users.
      *
-     @param displayName The name of the printer to be shown to the user. This parameter must not be null.     */
+     * @param displayName The name of the printer to be shown to the user. This parameter must not be null.
+     */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
