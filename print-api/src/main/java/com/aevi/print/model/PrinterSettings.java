@@ -39,6 +39,7 @@ public class PrinterSettings implements Jsonable {
     private final String[] supportedLanguages;
 
     private final PrinterFont[] printerFonts;
+    private String displayName;
 
     PrinterSettings(String printerId, int paperWidth, int printableWidth, float paperDotsPmm,
                     PaperKind paperKind, PrinterFont[] printerFonts,
@@ -57,6 +58,7 @@ public class PrinterSettings implements Jsonable {
         }
 
         this.printerId = printerId;
+
         this.paperWidth = paperWidth;
         this.printableWidth = printableWidth;
         this.paperDotsPmm = paperDotsPmm;
@@ -72,12 +74,33 @@ public class PrinterSettings implements Jsonable {
     }
 
     /**
-     * Gets the unique Id of this printer.
+     * Gets the unique ID of this printer.
      *
-     * @return the id of the printer, must be unique.
+     * @return the ID of the printer, must be unique.
      */
     public String getPrinterId() {
         return printerId;
+    }
+
+    /**
+     * Gets the printer name that will be displayed to the users. If this has not been set the printer ID will be used
+     *
+     * @return the display name of the printer.
+     */
+    public String getDisplayName() {
+        if (displayName== null || displayName.isEmpty()) {
+            return printerId;
+        }
+        return displayName;
+    }
+
+    /**
+     * Sets the printer name that will be displayed to the users.
+     *
+     * @param displayName The name of the printer to be shown to the user. This parameter must not be null.
+     */
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     /**

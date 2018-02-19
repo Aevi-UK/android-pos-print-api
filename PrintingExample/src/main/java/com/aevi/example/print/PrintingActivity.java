@@ -15,10 +15,8 @@ import android.widget.Toast;
 
 import com.aevi.print.PrinterApi;
 import com.aevi.print.PrinterManager;
-import com.aevi.print.model.PrintAction;
 import com.aevi.print.model.PrintJob;
 import com.aevi.print.model.PrintPayload;
-import com.aevi.print.model.PrinterMessages;
 import com.aevi.print.model.PrinterSettings;
 import com.aevi.print.model.PrinterSettingsList;
 import com.aevi.print.model.PrinterStatus;
@@ -64,10 +62,10 @@ public class PrintingActivity extends AppCompatActivity {
     TextView printerStatusDisplay;
 
     @BindViews({R.id.button_print,
-                R.id.button_preview,
-                R.id.button_codepage_preview,
-                R.id.button_codepage_print,
-                R.id.button_open_drawer})
+            R.id.button_preview,
+            R.id.button_codepage_preview,
+            R.id.button_codepage_print,
+            R.id.button_open_drawer})
     List<Button> buttons;
 
     @BindView(R.id.button_open_drawer)
@@ -120,6 +118,12 @@ public class PrintingActivity extends AppCompatActivity {
         enableButtons(false);
         clearPrinterStatus();
         setupPrintDrivers();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unSubscribeFromPrinterSettings();
     }
 
     private void clearPrinterStatus() {
@@ -175,9 +179,7 @@ public class PrintingActivity extends AppCompatActivity {
     private void subscribeToPrinterSettings() {
         Log.d(TAG, "getPrintersSettings()");
 
-        if (printerSettingsDisposable != null) {
-            printerSettingsDisposable.dispose();
-        }
+        unSubscribeFromPrinterSettings();
 
         printerSettingsDisposable = printerManager.getPrintersSettings()
                 .subscribeOn(Schedulers.newThread())
@@ -188,7 +190,7 @@ public class PrintingActivity extends AppCompatActivity {
                         printerSettingsList = printerSettings.getPrinterSettings();
                         List<String> printerNames = new ArrayList<>();
                         for (PrinterSettings printerSetting : printerSettingsList) {
-                            printerNames.add(printerSetting.getPrinterId());
+                            printerNames.add(printerSetting.getDisplayName());
                         }
                         Log.d(TAG, "Got printer settings list: " + printerSettingsList.length);
                         driversSpinner.setAdapter(new ArrayAdapter<>(PrintingActivity.this,
@@ -209,6 +211,13 @@ public class PrintingActivity extends AppCompatActivity {
                         Log.e(TAG, "Failed during get settings", throwable);
                     }
                 });
+    }
+
+    private void unSubscribeFromPrinterSettings() {
+        if (printerSettingsDisposable != null) {
+            printerSettingsDisposable.dispose();
+            printerSettingsDisposable = null;
+        }
     }
 
     @Override
@@ -234,7 +243,7 @@ public class PrintingActivity extends AppCompatActivity {
             }
             subscribeToPrinterStatus(selectedPrinter.getPrinterId());
 
-            codepagesLayout.setVisibility(selectedPrinter.doesSupportCodePages()? View.VISIBLE: View.GONE);
+            codepagesLayout.setVisibility(selectedPrinter.doesSupportCodePages() ? View.VISIBLE : View.GONE);
             openDrawerButton.setEnabled(doesSupportCashDrawer());
         }
     }
@@ -242,7 +251,7 @@ public class PrintingActivity extends AppCompatActivity {
     private boolean doesSupportCashDrawer() {
         if (selectedPrinter.canHandleCommands()) {
             String[] commands = selectedPrinter.getCommands();
-            if (commands!= null) {
+            if (commands != null) {
                 for (String command : commands) {
                     if (ACTION_OPEN_CASH_DRAWER.equals(command)) {
                         return true;
@@ -336,9 +345,9 @@ public class PrintingActivity extends AppCompatActivity {
     private void displayPrintResultMessage(@NonNull PrintJob printResult) {
         if (printResult.getPrintJobState() == PrintJob.State.FAILED) {
             showToastMessage(getString(R.string.failure_toast_message, printResult.getPrintJobState(), printResult.getFailedReason()));
-            Log.d(TAG, "Printing result: " + printResult.getPrintJobState() + " : " + printResult.getFailedReason()  + " - " + printResult
+            Log.d(TAG, "Printing result: " + printResult.getPrintJobState() + " : " + printResult.getFailedReason() + " - " + printResult
                     .getDiagnosticMessage());
-          } else {
+        } else {
             showToastMessage(getString(R.string.result_toast_message, printResult.getPrintJobState()));
             Log.d(TAG, "Printing result: " + printResult.getPrintJobState());
         }
