@@ -16,13 +16,14 @@ package com.aevi.print.model;
 import com.aevi.print.json.JsonConverter;
 
 import static com.aevi.print.model.PrinterFont.DEFAULT_FONT;
+import static com.aevi.print.util.Preconditions.checkNotNull;
 
 /**
  * This class represents a single text line in a {@link com.aevi.print.model.PrintPayload}.
  */
 public class TextRow implements PrintRow, Cloneable {
 
-    private String text;
+    private final String text;
     private int printerFontId = DEFAULT_FONT;
     private Underline underline = Underline.NONE;
     private FontStyle fontStyle = FontStyle.NORMAL;
@@ -45,13 +46,11 @@ public class TextRow implements PrintRow, Cloneable {
      * @param printerFont The printer font to use
      */
     public TextRow(String text, PrinterFont printerFont) {
-        if (text == null) {
-            throw new IllegalArgumentException("text must not be null");
-        }
+        this.text = checkNotNull(text, "text must not be null");
+
         if (printerFont != null) {
             this.printerFontId = printerFont.getId();
         }
-        this.text = text;
     }
 
     /**

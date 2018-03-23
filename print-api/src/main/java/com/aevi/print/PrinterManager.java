@@ -13,15 +13,14 @@
  */
 package com.aevi.print;
 
-import com.aevi.print.model.PrinterSettingsList;
 import com.aevi.print.model.PrintJob;
 import com.aevi.print.model.PrintPayload;
 import com.aevi.print.model.PrinterSettings;
+import com.aevi.print.model.PrinterSettingsList;
 import com.aevi.print.model.PrinterStatus;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
-
 
 public interface PrinterManager {
 

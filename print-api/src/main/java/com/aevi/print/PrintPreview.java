@@ -118,7 +118,7 @@ public final class PrintPreview {
     }
 
     private List<PrintRow> processRowsBeforePreviewing(PrintRow[] rows) {
-        List<PrintRow> result = new ArrayList<PrintRow>();
+        List<PrintRow> result = new ArrayList<>();
         for (PrintRow row : rows) {
             if (row instanceof TextRow) {
                 result.addAll(splitLongTextRow((TextRow) row));
@@ -130,7 +130,7 @@ public final class PrintPreview {
     }
 
     protected List<TextRow> splitLongTextRow(TextRow textRow) {
-        List<TextRow> result = new ArrayList<TextRow>();
+        List<TextRow> result = new ArrayList<>();
         PrinterFont font = getFont(textRow.getPrinterFontId());
         String line = textRow.getText();
         String remaining = "";

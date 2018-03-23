@@ -17,14 +17,14 @@ public class PrinterFont {
 
     public static final int DEFAULT_FONT = -1;
 
-    private int id;
-    private String name;
-    private int width;
-    private int height;
-    private boolean isDefault;
-    private int numColumns;
-    private int lineHeight;
-    private FontStyle[] supportedFontStyles;
+    private final int id;
+    private final String name;
+    private final int width;
+    private final int height;
+    private final boolean isDefault;
+    private final int numColumns;
+    private final int lineHeight;
+    private final FontStyle[] supportedFontStyles;
 
     public PrinterFont(int id, String name, int width, int height, boolean isDefault, int numColumns, int lineHeight,
                        FontStyle[] supportedFontStyles) {
