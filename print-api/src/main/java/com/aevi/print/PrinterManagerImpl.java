@@ -37,9 +37,11 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-import static android.content.ContentValues.TAG;
+import static com.aevi.print.util.Preconditions.checkNotNull;
 
 class PrinterManagerImpl implements PrinterManager {
+
+    private static final String TAG = PrinterManagerImpl.class.getSimpleName();
 
     private static final String PRINT_SERVICE_PACKAGE = "com.aevi.print.service";
     private static final ComponentName PRINT_MESSENGER_SERVICE_COMPONENT =
@@ -67,6 +69,7 @@ class PrinterManagerImpl implements PrinterManager {
 
     @Override
     public Observable<PrintJob> print(final PrintPayload printPayload) {
+        checkNotNull(printPayload, "printPayload must not be null");
         Log.d(TAG, "About to send: " + printPayload.toJson());
         final ObservableMessengerClient printingMessenger = getNewMessengerClient(PRINT_MESSENGER_SERVICE_COMPONENT);
         return printingMessenger.sendMessage(printPayload.toJson())
@@ -86,6 +89,8 @@ class PrinterManagerImpl implements PrinterManager {
 
     @Override
     public void sendAction(String printerId, String action) {
+        checkNotNull(printerId, "printerId must not be null");
+        checkNotNull(action, "action must not be null");
         Log.d(TAG, "About to send action : " + action);
         PrintAction printAction = new PrintAction(printerId, action);
         final ObservableMessengerClient printerActionMessenger = getNewMessengerClient(PRINTER_ACTION_SERVICE_COMPONENT);
@@ -100,6 +105,7 @@ class PrinterManagerImpl implements PrinterManager {
 
     @Override
     public Observable<PrinterStatus> status(String printerId) {
+        checkNotNull(printerId, "printerId must not be null");
         final ObservableMessengerClient printerStatusMessenger = getNewMessengerClient(PRINTER_STATUS_SERVICE_COMPONENT);
         return printerStatusMessenger.sendMessage(printerId)
                 .map(new Function<String, PrinterStatus>() {

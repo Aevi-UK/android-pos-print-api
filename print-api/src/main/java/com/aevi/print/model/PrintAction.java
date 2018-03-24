@@ -18,8 +18,8 @@ import com.aevi.print.json.Jsonable;
 
 public class PrintAction implements Jsonable {
 
-    private String printerId;
-    private String action;
+    private final String printerId;
+    private final String action;
 
     public PrintAction(String printerId, String action) {
         this.printerId = printerId;
