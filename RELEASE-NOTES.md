@@ -1,5 +1,11 @@
 ## Release Notes for the AEVI Android POS printer api
 
+## Version 1.1.3
+
+* Fixed an issue that prevented two print-api methods being used at the same time. It is highly 
+  recommended you upgrade to this version as soon as possible to avoid this bug.
+* Improved null checking on the API parameters. 
+
 ## Version 1.1.2
 
 * Added `PrinterSettings.getDisplayName` for the name that gets shown to the user.
