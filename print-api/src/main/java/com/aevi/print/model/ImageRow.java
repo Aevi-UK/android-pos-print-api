@@ -17,15 +17,17 @@ import android.graphics.Bitmap;
 
 import com.aevi.print.json.JsonConverter;
 
+import static com.aevi.print.util.Preconditions.checkNotNull;
+
 /**
  * This class represents an image line in a {@link PrintPayload}.
  */
 public class ImageRow implements PrintRow {
 
-    public static final int DEFAULT_CONTRAST_LEVEL = 50;
+    private static final int DEFAULT_CONTRAST_LEVEL = 50;
 
-    private Bitmap image;
-    private boolean scaleToFit;
+    private final Bitmap image;
+    private final boolean scaleToFit;
     private Alignment alignment = Alignment.LEFT;
     private int contrastLevel = DEFAULT_CONTRAST_LEVEL;
 
@@ -49,11 +51,8 @@ public class ImageRow implements PrintRow {
      * @param scaleToFit If true the image will be scaled down to fit the page if it is too large. If false the image will be cropped.
      */
     public ImageRow(Bitmap image, boolean scaleToFit) {
-        if (image == null) {
-            throw new IllegalArgumentException("image must not be null");
-        }
+        this.image = checkNotNull(image, "image must not be null");
         this.scaleToFit = scaleToFit;
-        this.image = image;
     }
 
     /**
@@ -88,7 +87,7 @@ public class ImageRow implements PrintRow {
      * @return This ImageRow object
      */
     public ImageRow align(Alignment alignment) {
-        this.alignment = alignment;
+        this.alignment = checkNotNull(alignment, "alignment must not be null");
         return this;
     }
 

@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.aevi.print.util.Preconditions.checkNotNull;
+
 /**
  * A {@link PrintPayload} contains a collection of {@link PrintRow} that
  * represent a printable text document.
@@ -33,7 +35,7 @@ import java.util.List;
  */
 public class PrintPayload implements Jsonable {
 
-    private List<JsonOption> rows = new ArrayList<>();
+    private final List<JsonOption> rows = new ArrayList<>();
 
     private int codePage = -1;
     private String printerId;
@@ -77,9 +79,7 @@ public class PrintPayload implements Jsonable {
      * @return The new {@link TextRow} object added to the payload
      */
     public TextRow append(String text, PrinterFont printerFont) {
-        if (text == null) {
-            throw new IllegalArgumentException("text must not be null");
-        }
+        checkNotNull(text, "text must not be null");
         TextRow textRow = new TextRow(text, printerFont);
         rows.add(new JsonOption(textRow));
         return textRow;
@@ -95,9 +95,7 @@ public class PrintPayload implements Jsonable {
      * @param toAppendPayload The payload to append
      */
     public void append(PrintPayload toAppendPayload) {
-        if (toAppendPayload == null) {
-            throw new IllegalArgumentException("appending payload must not be null");
-        }
+        checkNotNull(toAppendPayload, "appending payload must not be null");
 
         PrintRow[] rows = toAppendPayload.getRows();
         for (PrintRow row : rows) {
@@ -162,9 +160,8 @@ public class PrintPayload implements Jsonable {
     }
 
     public ImageRow append(Bitmap image, boolean scaleToFit) {
-        if (image == null) {
-            throw new IllegalArgumentException("image must not be null");
-        }
+        checkNotNull(image, "image must not be null");
+
         ImageRow imageRow = new ImageRow(image, scaleToFit);
         rows.add(new JsonOption(imageRow));
         return imageRow;
@@ -213,6 +210,7 @@ public class PrintPayload implements Jsonable {
 
     /**
      * Sets the language code to be used for this print payload
+     *
      * @param languageCode An ISO-639 two letter language code (usually obtained from {@link java.util.Locale#getLanguage()} if required)
      */
     public void setLanguage(String languageCode) {

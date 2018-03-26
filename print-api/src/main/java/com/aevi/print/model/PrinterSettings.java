@@ -18,6 +18,8 @@ import com.aevi.print.json.Jsonable;
 
 import java.util.Map;
 
+import static com.aevi.print.util.Preconditions.checkNotNull;
+
 /**
  * Contains information such as name, DPI and paper width for a specific PrinterSettings on the Device.
  */
@@ -49,20 +51,14 @@ public class PrinterSettings implements Jsonable {
                     Map<String, String> options,
                     String[] supportedLanguages) {
 
-        if (printerId == null) {
-            throw new IllegalArgumentException("printerId must not be null");
-        }
 
-        if (paperKind == null) {
-            throw new IllegalArgumentException("paperKind must not be null");
-        }
 
-        this.printerId = printerId;
+        this.printerId = checkNotNull(printerId, "printerId must not be null") ;
+        this.paperKind = checkNotNull(paperKind, "paperKind must not be null");
 
         this.paperWidth = paperWidth;
         this.printableWidth = printableWidth;
         this.paperDotsPmm = paperDotsPmm;
-        this.paperKind = paperKind;
         this.commands = commands;
         this.codepages = codepages;
         this.options = options;
