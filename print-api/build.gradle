@@ -1,15 +1,10 @@
-plugins {
-    id "com.jfrog.bintray" version "1.7.3"
-    id "com.github.dcendents.android-maven" version "1.5"
-}
 apply plugin: 'com.android.library'
 apply plugin: 'com.jfrog.bintray'
-apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'maven-publish'
 
 apply from: '../publish-repo.gradle'
 
-version = "1.1.3"
+version = "1.1.4-SNAPSHOT"
 group = 'com.aevi.print'
 ext.artifactId = 'print-api'
 
@@ -31,60 +26,6 @@ dependencies {
     testImplementation testDependencies.mockito
     testImplementation testDependencies.robolectric
     testImplementation testDependencies.assertJ
-}
-
-def siteUrl = 'https://github.com/Aevi-UK/android-pos-print-api'
-def gitUrl = 'https://github.com/Aevi-UK/android-pos-print-api.git'
-
-bintray {
-    configurations = ['archives']
-
-    pkg {
-        repo = 'aevi-uk'
-        name = 'android-pos-print-api'
-        userOrg = 'aevi'
-        licenses = ['Apache-2.0']
-        labels = ['printing', 'receipt', 'POS', 'android']
-        websiteUrl = siteUrl
-        issueTrackerUrl = 'https://github.com/Aevi-UK/android-pos-print-api/issues'
-        vcsUrl = gitUrl
-        publicDownloadNumbers = true
-    }
-}
-
-if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayKey')) {
-    bintray.user = project.bintrayUser
-    bintray.key = project.bintrayKey
-}
-
-install {
-    repositories.mavenInstaller {
-        pom {
-            project {
-                packaging 'aar'
-                name 'AndroidPosPrintApi'
-                url siteUrl
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id 'brettwold'
-                        name 'Brett Cherrington'
-                        email 'brett@annalytics.co.uk'
-                    }
-                }
-                scm {
-                    connection gitUrl
-                    developerConnection gitUrl
-                    url siteUrl
-                }
-            }
-        }
-    }
 }
 
 apply from: '../android-publish.gradle'
