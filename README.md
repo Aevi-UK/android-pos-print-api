@@ -112,8 +112,3 @@ limitations under the License.
 # NOTE
 
 It is recommended that you use the `master` branch of this project. 
-However if you need to use the `develop` branch you will also need to download [android-rxmessenger](https://github.com/Aevi-UK/android-rxmessenger) 
-and publish the SNAPSHOT version to your local maven repository.
-This can be done by running the following command on the 'android-rxmessenger' project.
-
-    ./gradlew publishToMavenLocal
