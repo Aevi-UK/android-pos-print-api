@@ -1,0 +1,139 @@
+version: 2
+
+generic:
+  - &job_config
+    docker:
+      - image: circleci/android:api-28-alpha
+    working_directory: ~/repo
+    environment:
+      _JAVA_OPTIONS: "-Xms516m -Xmx1024m"
+      GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.parallel=false
+
+  - &attach_workspace
+    attach_workspace:
+      at: ~/
+
+reusable-steps:
+  - &restore_cache
+    restore_cache:
+      keys:
+      - v2-dependencies-{{ checksum "dependencies.gradle" }}
+  - &save_cache
+    save_cache:
+      paths:
+        - ~/.gradle
+        - ~/.android
+      key: v2-dependencies-{{ checksum "dependencies.gradle" }}
+  - &setup_aws_cli
+    run:
+      name: Setup AWS CLI
+      command: sudo pip install awscli
+  - &gradle_props
+    run:
+      name: Write gradle.properties
+      command: /bin/bash writegradleprops.sh
+  - &download_android_deps
+    run:
+      name: Download Android Dependencies
+      command: ./gradlew androidDependencies
+
+  - &test
+    run:
+      name: Test
+      command: ./gradlew clean test
+  - &build
+    run:
+      name: Build and copy
+      command: ./gradlew build
+
+  - &persist
+    persist_to_workspace:
+      root: ~/
+      paths:
+        - repo
+        - .gradle
+        - .android
+
+  - &publish_to_qa
+    run:
+      name: Publish to QA
+      command: ./gradlew build
+  - &publish_to_snapshot
+    run:
+      name: Publish to Snapshot
+      command: ./gradlew build
+  - &publish_to_release
+    run:
+      name: Publish to Release
+      command: ./gradlew build javadoc bintrayUpload
+
+
+
+jobs:
+  build:
+    <<: *job_config
+    steps:
+      - *setup_aws_cli
+      - checkout
+      - *gradle_props
+      - *restore_cache
+      - *download_android_deps
+      - *test
+      - *build
+      - *save_cache
+      - *persist
+
+  deploy-qa:
+    <<: *job_config
+    steps:
+      - *setup_aws_cli
+      - checkout
+      - *gradle_props
+      - *restore_cache
+      - *build
+      - *publish_to_qa
+
+  deploy-snapshot:
+    <<: *job_config
+    steps:
+      - *setup_aws_cli
+      - checkout
+      - *gradle_props
+      - *restore_cache
+      - *build
+      - *publish_to_snapshot
+
+  deploy-release:
+    <<: *job_config
+    steps:
+      - *setup_aws_cli
+      - checkout
+      - *gradle_props
+      - *restore_cache
+      - *build
+      - *publish_to_release
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy-qa:
+          requires:
+            - build
+          filters:
+            branches:
+              only: /.*release.*/
+      - deploy-snapshot:
+          requires:
+            - build
+          filters:
+            branches:
+              only: develop
+      - deploy-release:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+
