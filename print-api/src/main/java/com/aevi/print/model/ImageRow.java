@@ -14,8 +14,7 @@
 package com.aevi.print.model;
 
 import android.graphics.Bitmap;
-
-import com.aevi.print.json.JsonConverter;
+import com.aevi.util.json.JsonConverter;
 
 import static com.aevi.print.util.Preconditions.checkNotNull;
 

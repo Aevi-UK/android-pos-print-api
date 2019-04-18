@@ -13,7 +13,7 @@
  */
 package com.aevi.print.model;
 
-import com.aevi.print.json.Jsonable;
+import com.aevi.util.json.Jsonable;
 
 /**
  * Base interface for data rows included in a {@link PrintPayload}

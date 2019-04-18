@@ -13,7 +13,7 @@
  */
 package com.aevi.print.model;
 
-import com.aevi.print.json.JsonConverter;
+import com.aevi.util.json.JsonConverter;
 
 import static com.aevi.print.model.PrinterFont.DEFAULT_FONT;
 import static com.aevi.print.util.Preconditions.checkNotNull;

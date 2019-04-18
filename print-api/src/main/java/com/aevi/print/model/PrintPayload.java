@@ -16,9 +16,9 @@ package com.aevi.print.model;
 import android.graphics.Bitmap;
 
 import com.aevi.print.PrinterManager;
-import com.aevi.print.json.JsonConverter;
-import com.aevi.print.json.JsonOption;
-import com.aevi.print.json.Jsonable;
+import com.aevi.util.json.JsonConverter;
+import com.aevi.util.json.JsonOption;
+import com.aevi.util.json.Jsonable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
