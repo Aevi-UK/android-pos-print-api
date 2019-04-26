@@ -13,8 +13,8 @@
  */
 package com.aevi.print;
 
-import com.aevi.print.json.JsonConverter;
-import com.aevi.print.json.Jsonable;
+import com.aevi.util.json.JsonConverter;
+import com.aevi.util.json.Jsonable;
 
 public class PrinterSettingsRequest implements Jsonable {
 
