@@ -4,18 +4,30 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.3.2'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.1'
     }
 }
 
+version = "1.1.4"
+ext.artifactId = 'print-api'
+
+ext.versionCode = 10104008 // MMmmppbbb
+
 allprojects {
+
+    project.ext {
+        apiVersion = rootProject.version
+        apiVersionCode = rootProject.versionCode
+    }
 
     repositories {
         jcenter()
         mavenCentral()
         google()
         maven {
-            url  "http://dl.bintray.com/aevi/aevi-uk"
+            url "http://dl.bintray.com/aevi/aevi-uk"
         }
         mavenLocal()
 

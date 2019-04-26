@@ -1,13 +1,13 @@
 ext {
 
-    androidBuildVersion = "26.0.2"
-    projectTargetSdkVersion = 26
+    projectTargetSdkVersion = 28
     projectMinSdkVersion = 22
 
     rxAndroidVersion = '2.0.1'
     rxJavaVersion = '2.1.0'
     gsonVersion = '2.8.0'
     rxMessengerVersion = '3.0.1'
+    jsonConverterVersion = '1.1.0'
 
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'
@@ -29,6 +29,7 @@ ext {
             rxJava     : "io.reactivex.rxjava2:rxjava:$rxJavaVersion",
             rxAndroid  : "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion",
             gson       : "com.google.code.gson:gson:$gsonVersion",
+            jsonConverter     : "com.aevi.util:json-converter:$jsonConverterVersion",
     ]
 
     testDependencies = [
