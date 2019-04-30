@@ -1,7 +1,7 @@
 buildscript {
     repositories {
-        jcenter()
         google()
+        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.2'
@@ -10,10 +10,9 @@ buildscript {
     }
 }
 
-version = "1.1.4"
+version = "1.1.5-RC1"
+ext.versionCode = 10105001 // // semver based, MMmmppbbb (major minor patch build) without leading 0 for MM
 ext.artifactId = 'print-api'
-
-ext.versionCode = 10104008 // MMmmppbbb
 
 allprojects {
 
@@ -23,12 +22,23 @@ allprojects {
     }
 
     repositories {
+        google()
         jcenter()
         mavenCentral()
-        google()
         maven {
             url "http://dl.bintray.com/aevi/aevi-uk"
         }
+
+        if (project.hasProperty('aws_accessid')) {
+            maven {
+                url "s3://sdk-qa.aevi.com/maven2"
+                credentials(AwsCredentials) {
+                    accessKey aws_accessid
+                    secretKey aws_accesskey
+                }
+            }
+        }
+
         mavenLocal()
 
         if (project.hasProperty('aws_accessid')) {

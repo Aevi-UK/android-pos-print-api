@@ -20,7 +20,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.util.Log;
 
-import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
+import com.aevi.android.rxmessenger.ChannelClient;
+import com.aevi.android.rxmessenger.Channels;
 import com.aevi.print.model.PrintAction;
 import com.aevi.print.model.PrintJob;
 import com.aevi.print.model.PrintPayload;
@@ -71,7 +72,7 @@ class PrinterManagerImpl implements PrinterManager {
     public Observable<PrintJob> print(final PrintPayload printPayload) {
         checkNotNull(printPayload, "printPayload must not be null");
         Log.d(TAG, "About to send: " + printPayload.toJson());
-        final ObservableMessengerClient printingMessenger = getNewMessengerClient(PRINT_MESSENGER_SERVICE_COMPONENT);
+        final ChannelClient printingMessenger = getNewChannelClient(PRINT_MESSENGER_SERVICE_COMPONENT);
         return printingMessenger.sendMessage(printPayload.toJson())
                 .map(new Function<String, PrintJob>() {
                     @Override
@@ -93,7 +94,7 @@ class PrinterManagerImpl implements PrinterManager {
         checkNotNull(action, "action must not be null");
         Log.d(TAG, "About to send action : " + action);
         PrintAction printAction = new PrintAction(printerId, action);
-        final ObservableMessengerClient printerActionMessenger = getNewMessengerClient(PRINTER_ACTION_SERVICE_COMPONENT);
+        final ChannelClient printerActionMessenger = getNewChannelClient(PRINTER_ACTION_SERVICE_COMPONENT);
         printerActionMessenger.sendMessage(printAction.toJson()).take(1)
                 .doFinally(new Action() {
                     @Override
@@ -106,7 +107,7 @@ class PrinterManagerImpl implements PrinterManager {
     @Override
     public Observable<PrinterStatus> status(String printerId) {
         checkNotNull(printerId, "printerId must not be null");
-        final ObservableMessengerClient printerStatusMessenger = getNewMessengerClient(PRINTER_STATUS_SERVICE_COMPONENT);
+        final ChannelClient printerStatusMessenger = getNewChannelClient(PRINTER_STATUS_SERVICE_COMPONENT);
         return printerStatusMessenger.sendMessage(printerId)
                 .map(new Function<String, PrinterStatus>() {
                     @Override
@@ -145,7 +146,7 @@ class PrinterManagerImpl implements PrinterManager {
     }
 
     private Observable<PrinterSettingsList> getSettingsServiceIntent(PrinterSettingsRequest printerRequest) {
-        final ObservableMessengerClient printSettingsMessenger = getNewMessengerClient(PRINT_SETTINGS_SERVICE_COMPONENT);
+        final ChannelClient printSettingsMessenger = getNewChannelClient(PRINT_SETTINGS_SERVICE_COMPONENT);
 
         return printSettingsMessenger.sendMessage(printerRequest.toJson())
                 .map(new Function<String, PrinterSettingsList>() {
@@ -161,8 +162,8 @@ class PrinterManagerImpl implements PrinterManager {
                 });
     }
 
-    private ObservableMessengerClient getNewMessengerClient(ComponentName componentName) {
-        return new ObservableMessengerClient(context, componentName);
+    private ChannelClient getNewChannelClient(ComponentName componentName) {
+        return Channels.messenger(context, componentName);
     }
 
     private Intent getIntent(ComponentName componentName) {

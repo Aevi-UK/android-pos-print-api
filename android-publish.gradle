@@ -10,7 +10,10 @@ configurations {
 }
 
 dependencies {
-    javadoc_extra_jars "${domainDependencies.rxJava}@jar", "${domainDependencies.gson}@jar", "${domainDependencies.rxMessenger}@jar", "${domainDependencies.jsonConverter}@jar"
+    javadoc_extra_jars "${domainDependencies.rxJava}@jar",
+            "${domainDependencies.gson}@jar",
+            "${domainDependencies.rxMessenger}@jar",
+            "${domainDependencies.jsonConverter}@jar"
 }
 
 task javadoc(type: Javadoc) {
@@ -112,7 +115,7 @@ bintray {
         licenses = ['Apache-2.0']
         labels = ['printing', 'receipt', 'POS', 'android']
         websiteUrl = siteUrl
-        issueTrackerUrl = 'https://github.com/Aevi-UK/android-pos-print-api/issues'
+        issueTrackerUrl = "${siteUrl}/issues"
         vcsUrl = gitUrl
         publicDownloadNumbers = true
     }
