@@ -3,7 +3,8 @@
 ## Version 1.1.5
 
 * Update underlying rx-messenger library to v5.0.2.
-* Upgraded the build tools. 
+* Upgraded the build tools.
+* Reverted to Java 7 in the Print API.
 
 ## Version 1.1.4
 
