@@ -2,6 +2,18 @@ apply plugin: 'maven-publish'
 
 publishing {
     repositories {
+
+        if (System.getenv("AEVI_ARTIFACTORY_AWS_ACCESS_ID") != null) {
+            maven {
+                name 'qa'
+                url "s3://sdk-qa.aevi.com/maven2"
+                credentials(AwsCredentials) {
+                    accessKey System.getenv("AEVI_ARTIFACTORY_AWS_ACCESS_ID")
+                    secretKey System.getenv("AEVI_ARTIFACTORY_AWS_SECRET")
+                }
+            }
+        }
+
         if (project.hasProperty('aws_accessid')) {
             maven {
                 name 'snapshot'
