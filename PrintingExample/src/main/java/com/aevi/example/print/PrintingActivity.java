@@ -327,7 +327,8 @@ public class PrintingActivity extends AppCompatActivity {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-                        Log.e(TAG, "Error while printing", throwable);
+                        Log.e(TAG, "ERROR: ", throwable);
+                        showToastMessage("ERROR: " + throwable.getMessage());
                     }
                 });
     }

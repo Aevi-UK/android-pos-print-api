@@ -3,8 +3,9 @@
 ## Version 1.1.5
 
 * Update underlying rx-messenger library to v5.0.2.
+* Changed rx-messenger dependency to implementation. 
 * Upgraded the build tools.
-* Reverted to Java 7 in the Print API.
+* Converted Print API library to use a jar file.
 
 ## Version 1.1.4
 
