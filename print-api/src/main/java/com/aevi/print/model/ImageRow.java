@@ -94,8 +94,10 @@ public class ImageRow implements PrintRow {
      * Gets the contrast level of this image row. The contrast level is a
      * percentage value between 0 and 100, where 100 is full contrast.
      *
-     * @return the contrastLevel to set,
+     * @return the contrastLevel to set
+     * @deprecated Deprecated since 1.1.5, has no effect
      */
+    @Deprecated
     public int getContrastLevel() {
         return contrastLevel;
     }
@@ -108,7 +110,9 @@ public class ImageRow implements PrintRow {
      *
      * @param contrastLevel the contrastLevel to set
      * @return This ImageRow object
+     * @deprecated Deprecated since 1.1.5, has no effect
      */
+    @Deprecated
     public ImageRow contrastLevel(int contrastLevel) {
         if (contrastLevel < 0 || contrastLevel > 100) {
             throw new IllegalArgumentException("contrastLevel must be between 0 and 100");
