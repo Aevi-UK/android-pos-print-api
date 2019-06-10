@@ -6,6 +6,8 @@
 * Changed rx-messenger dependency to implementation. 
 * Upgraded the build tools.
 * Converted Print API library to use a jar file.
+* Reverted to Java 7 in the Print API.
+* Deprecate contrast level for image rows.
 
 ## Version 1.1.4
 
