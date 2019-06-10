@@ -95,7 +95,8 @@ public class ImageRow implements PrintRow {
      * percentage value between 0 and 100, where 100 is full contrast.
      *
      * @return the contrastLevel to set
-     * @deprecated Deprecated since 1.1.5, has no effect
+     * @deprecated Deprecated since 1.1.5, has no effect. Ensure all contrast adjustments are made
+     * on the original image.
      */
     @Deprecated
     public int getContrastLevel() {
@@ -110,7 +111,8 @@ public class ImageRow implements PrintRow {
      *
      * @param contrastLevel the contrastLevel to set
      * @return This ImageRow object
-     * @deprecated Deprecated since 1.1.5, has no effect
+     * @deprecated Deprecated since 1.1.5, has no effect. Ensure all contrast adjustments are made
+     * on the original image.
      */
     @Deprecated
     public ImageRow contrastLevel(int contrastLevel) {
