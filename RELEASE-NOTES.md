@@ -5,6 +5,7 @@
 * Update underlying rx-messenger library to v5.0.2.
 * Upgraded the build tools.
 * Reverted to Java 7 in the Print API.
+* Deprecate contrast level for image rows.
 
 ## Version 1.1.4
 
