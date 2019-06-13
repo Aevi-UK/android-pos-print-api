@@ -2,7 +2,7 @@ package com.aevi.example.print;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
@@ -30,6 +30,8 @@ import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
+import butterknife.Setter;
+import butterknife.ViewCollections;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
@@ -74,12 +76,7 @@ public class PrintingActivity extends AppCompatActivity {
     @BindView(R.id.codepages)
     ViewGroup codepagesLayout;
 
-    static final ButterKnife.Setter<View, Boolean> ENABLED = new ButterKnife.Setter<View, Boolean>() {
-        @Override
-        public void set(View view, Boolean value, int index) {
-            view.setEnabled(value);
-        }
-    };
+    static final Setter<View, Boolean> ENABLED = (view, value, index) -> view.setEnabled(value);
 
     private static final int MAX_STATUS_LENGTH = 3;
 
@@ -297,7 +294,7 @@ public class PrintingActivity extends AppCompatActivity {
 
     private void enableButtons(boolean enable) {
         if (enable) {
-            ButterKnife.apply(buttons, ENABLED, enable);
+            ViewCollections.set(buttons, ENABLED, enable);
         }
     }
 
@@ -345,9 +342,10 @@ public class PrintingActivity extends AppCompatActivity {
 
     private void displayPrintResultMessage(@NonNull PrintJob printResult) {
         if (printResult.getPrintJobState() == PrintJob.State.FAILED) {
-            showToastMessage(getString(R.string.failure_toast_message, printResult.getPrintJobState(), printResult.getFailedReason()));
-            Log.d(TAG, "Printing result: " + printResult.getPrintJobState() + " : " + printResult.getFailedReason() + " - " + printResult
-                    .getDiagnosticMessage());
+            showToastMessage(getString(R.string.failure_toast_message, printResult.getPrintJobState(),
+                    printResult.getFailedReason(), printResult.getDiagnosticMessage()));
+            Log.d(TAG, "Printing result: " + printResult.getPrintJobState() + " : " +
+                    printResult.getFailedReason() + " - " + printResult.getDiagnosticMessage());
         } else {
             showToastMessage(getString(R.string.result_toast_message, printResult.getPrintJobState()));
             Log.d(TAG, "Printing result: " + printResult.getPrintJobState());
