@@ -13,7 +13,7 @@ android {
         targetSdkVersion projectTargetSdkVersion
         versionCode apiVersionCode
         versionName "${apiVersion}"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     if (project.hasProperty('keystore_path')) {

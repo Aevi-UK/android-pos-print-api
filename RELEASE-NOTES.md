@@ -8,6 +8,7 @@
 * Converted Print API library to use a jar file.
 * Reverted to Java 7 in the Print API.
 * Deprecate contrast level for image rows.
+* Upgrade printing example to use androidx
 
 ## Version 1.1.4
 
