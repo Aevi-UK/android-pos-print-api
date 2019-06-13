@@ -342,9 +342,10 @@ public class PrintingActivity extends AppCompatActivity {
 
     private void displayPrintResultMessage(@NonNull PrintJob printResult) {
         if (printResult.getPrintJobState() == PrintJob.State.FAILED) {
-            showToastMessage(getString(R.string.failure_toast_message, printResult.getPrintJobState(), printResult.getFailedReason()));
-            Log.d(TAG, "Printing result: " + printResult.getPrintJobState() + " : " + printResult.getFailedReason() + " - " + printResult
-                    .getDiagnosticMessage());
+            showToastMessage(getString(R.string.failure_toast_message, printResult.getPrintJobState(),
+                    printResult.getFailedReason(), printResult.getDiagnosticMessage()));
+            Log.d(TAG, "Printing result: " + printResult.getPrintJobState() + " : " +
+                    printResult.getFailedReason() + " - " + printResult.getDiagnosticMessage());
         } else {
             showToastMessage(getString(R.string.result_toast_message, printResult.getPrintJobState()));
             Log.d(TAG, "Printing result: " + printResult.getPrintJobState());
