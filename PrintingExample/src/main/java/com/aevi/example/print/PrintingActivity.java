@@ -82,7 +82,6 @@ public class PrintingActivity extends AppCompatActivity {
     private Disposable printerStatusDisposable;
     private Disposable printerSettingsDisposable;
     private SparseArray spinnerPosStore;
-    private boolean resumed;
     private List<StatusRecord> latestPrinterStatus = new ArrayList<>(MAX_STATUS_LENGTH);
 
     @Override
@@ -104,7 +103,6 @@ public class PrintingActivity extends AppCompatActivity {
         enableButtons(false);
         clearPrinterStatus();
         setupPrintDrivers();
-        resumed = true;
     }
 
     @Override
@@ -112,7 +110,6 @@ public class PrintingActivity extends AppCompatActivity {
         unsubscribeFromPrinterSettings();
         unsubscribeFromPrinterStatus();
         super.onPause();
-        resumed = false;
     }
 
     private void clearPrinterStatus() {
@@ -233,7 +230,7 @@ public class PrintingActivity extends AppCompatActivity {
 
     @OnItemSelected(R.id.print_driver_spinner)
     public void selectDriver(int position) {
-        if (resumed && printerSettingsList != null && printerSettingsList.length > 0) {
+        if (printerSettingsList != null && printerSettingsList.length > 0) {
             if (position < printerSettingsList.length) {
                 selectedPrinter = printerSettingsList[position];
             } else {
