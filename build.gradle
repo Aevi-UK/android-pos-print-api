@@ -4,14 +4,14 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.1'
+        classpath 'com.android.tools.build:gradle:3.5.0'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.1'
     }
 }
 
-version = "1.1.5-RC4"
-ext.versionCode = 10105004 // // semver based, MMmmppbbb (major minor patch build) without leading 0 for MM
+version = "1.1.5-RC5"
+ext.versionCode = 10105005 // semver based, MMmmppbbb (major minor patch build) without leading 0 for MM
 
 allprojects {
 
@@ -24,9 +24,6 @@ allprojects {
         google()
         jcenter()
         mavenCentral()
-        maven {
-            url "http://dl.bintray.com/aevi/aevi-uk"
-        }
 
         maven {
             url "http://sdk-public-artifacts.s3-website-eu-west-1.amazonaws.com/maven2"
