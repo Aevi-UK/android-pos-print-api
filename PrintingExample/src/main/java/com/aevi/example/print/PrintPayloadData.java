@@ -142,11 +142,11 @@ public class PrintPayloadData {
 
         // graphic lines
         Bitmap image = BitmapFactory.decodeResource(context.getResources(), R.drawable.bwlogotrans);
-        printPayload.append(image).align(Alignment.LEFT).contrastLevel(100);
+        printPayload.append(image).align(Alignment.LEFT);
         printPayload.appendEmptyLine();
         printPayload.append(image).align(Alignment.RIGHT);
         printPayload.appendEmptyLine();
-        printPayload.append(image).align(Alignment.CENTER).contrastLevel(25);
+        printPayload.append(image).align(Alignment.CENTER);
 
         return printPayload;
     }

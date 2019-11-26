@@ -2,7 +2,6 @@ package com.aevi.example.print;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
@@ -12,6 +11,8 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.aevi.print.PrinterApi;
 import com.aevi.print.PrinterManager;
@@ -30,6 +31,8 @@ import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
+import butterknife.Setter;
+import butterknife.ViewCollections;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
@@ -42,13 +45,11 @@ import static com.aevi.print.model.PrinterMessages.ACTION_OPEN_CASH_DRAWER;
 
 public class PrintingActivity extends AppCompatActivity {
 
+    static final Setter<View, Boolean> ENABLED = (view, value, index) -> view.setEnabled(value);
     private static final String TAG = PrintingActivity.class.getSimpleName();
-
     private static final String KEY_POS_STORE = "posStore";
-
-    private PrinterManager printerManager;
-    private PrintPayloadData printPayloadData;
-
+    private static final int MAX_STATUS_LENGTH = 3;
+    private static final SimpleDateFormat STATUS_TIME_FORMAT = new SimpleDateFormat("dd-MM HH:mm:ss");
     @BindView(R.id.print_driver_spinner)
     Spinner driversSpinner;
 
@@ -73,31 +74,15 @@ public class PrintingActivity extends AppCompatActivity {
 
     @BindView(R.id.codepages)
     ViewGroup codepagesLayout;
-
-    static final ButterKnife.Setter<View, Boolean> ENABLED = new ButterKnife.Setter<View, Boolean>() {
-        @Override
-        public void set(View view, Boolean value, int index) {
-            view.setEnabled(value);
-        }
-    };
-
-    private static final int MAX_STATUS_LENGTH = 3;
-
+    private PrinterManager printerManager;
+    private PrintPayloadData printPayloadData;
+    private String subscribedStatusId;
     private PrinterSettings[] printerSettingsList;
     private PrinterSettings selectedPrinter;
-    private Disposable selectedPrinterDisposable;
+    private Disposable printerStatusDisposable;
     private Disposable printerSettingsDisposable;
     private SparseArray spinnerPosStore;
-
-    private class StatusRecord {
-
-        String printerId;
-        String dateTime;
-        String status;
-    }
-
     private List<StatusRecord> latestPrinterStatus = new ArrayList<>(MAX_STATUS_LENGTH);
-    private static final SimpleDateFormat STATUS_TIME_FORMAT = new SimpleDateFormat("dd-MM HH:mm:ss");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,8 +107,9 @@ public class PrintingActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        unsubscribeFromPrinterSettings();
+        unsubscribeFromPrinterStatus();
         super.onPause();
-        unSubscribeFromPrinterSettings();
     }
 
     private void clearPrinterStatus() {
@@ -141,45 +127,46 @@ public class PrintingActivity extends AppCompatActivity {
         }
     }
 
-    private void subscribeToPrinterStatus(final String printerId) {
-        if (selectedPrinterDisposable != null) {
-            selectedPrinterDisposable.dispose();
+    private synchronized void subscribeToPrinterStatus(final String printerId) {
+        if (printerId != null && !printerId.equals(subscribedStatusId)) {
+            unsubscribeFromPrinterStatus();
+
+            printerStatusDisposable = printerManager.status(printerId).subscribe(new Consumer<PrinterStatus>() {
+                @Override
+                public void accept(@NonNull PrinterStatus printerStatus) throws Exception {
+                    Log.d(TAG, "Received status: " + printerStatus.getStatus());
+
+                    while (latestPrinterStatus.size() >= MAX_STATUS_LENGTH) {
+                        latestPrinterStatus.remove(0);
+                    }
+
+                    StatusRecord record = new StatusRecord();
+                    record.dateTime = STATUS_TIME_FORMAT.format(System.currentTimeMillis());
+                    record.status = printerStatus.getStatus();
+                    record.printerId = printerId;
+                    latestPrinterStatus.add(record);
+
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (StatusRecord statusRecord : latestPrinterStatus) {
+                        stringBuilder
+                                .insert(0, "\n")
+                                .insert(0, statusRecord.status)
+                                .insert(0, " ")
+                                .insert(0, statusRecord.printerId)
+                                .insert(0, " ")
+                                .insert(0, statusRecord.dateTime);
+                    }
+                    printerStatusDisplay.setText(stringBuilder.toString());
+                }
+            });
+            subscribedStatusId = printerId;
         }
-
-        selectedPrinterDisposable = printerManager.status(printerId).subscribe(new Consumer<PrinterStatus>() {
-            @Override
-            public void accept(@NonNull PrinterStatus printerStatus) throws Exception {
-                Log.d(TAG, "Received status: " + printerStatus.getStatus());
-
-                while (latestPrinterStatus.size() >= MAX_STATUS_LENGTH) {
-                    latestPrinterStatus.remove(0);
-                }
-
-                StatusRecord record = new StatusRecord();
-                record.dateTime = STATUS_TIME_FORMAT.format(System.currentTimeMillis());
-                record.status = printerStatus.getStatus();
-                record.printerId = printerId;
-                latestPrinterStatus.add(record);
-
-                StringBuilder stringBuilder = new StringBuilder();
-                for (StatusRecord statusRecord : latestPrinterStatus) {
-                    stringBuilder
-                            .insert(0, "\n")
-                            .insert(0, statusRecord.status)
-                            .insert(0, " ")
-                            .insert(0, statusRecord.printerId)
-                            .insert(0, " ")
-                            .insert(0, statusRecord.dateTime);
-                }
-                printerStatusDisplay.setText(stringBuilder.toString());
-            }
-        });
     }
 
     private void subscribeToPrinterSettings() {
         Log.d(TAG, "getPrintersSettings()");
 
-        unSubscribeFromPrinterSettings();
+        unsubscribeFromPrinterSettings();
 
         printerSettingsDisposable = printerManager.getPrintersSettings()
                 .subscribeOn(Schedulers.newThread())
@@ -213,10 +200,18 @@ public class PrintingActivity extends AppCompatActivity {
                 });
     }
 
-    private void unSubscribeFromPrinterSettings() {
+    private void unsubscribeFromPrinterSettings() {
         if (printerSettingsDisposable != null) {
             printerSettingsDisposable.dispose();
             printerSettingsDisposable = null;
+        }
+    }
+
+    private synchronized void unsubscribeFromPrinterStatus() {
+        if (printerStatusDisposable != null) {
+            printerStatusDisposable.dispose();
+            printerStatusDisposable = null;
+            subscribedStatusId = null;
         }
     }
 
@@ -297,7 +292,7 @@ public class PrintingActivity extends AppCompatActivity {
 
     private void enableButtons(boolean enable) {
         if (enable) {
-            ButterKnife.apply(buttons, ENABLED, enable);
+            ViewCollections.set(buttons, ENABLED, enable);
         }
     }
 
@@ -327,7 +322,8 @@ public class PrintingActivity extends AppCompatActivity {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-                        Log.e(TAG, "Error while printing", throwable);
+                        Log.e(TAG, "ERROR: ", throwable);
+                        showToastMessage("ERROR: " + throwable.getMessage());
                     }
                 });
     }
@@ -344,9 +340,10 @@ public class PrintingActivity extends AppCompatActivity {
 
     private void displayPrintResultMessage(@NonNull PrintJob printResult) {
         if (printResult.getPrintJobState() == PrintJob.State.FAILED) {
-            showToastMessage(getString(R.string.failure_toast_message, printResult.getPrintJobState(), printResult.getFailedReason()));
-            Log.d(TAG, "Printing result: " + printResult.getPrintJobState() + " : " + printResult.getFailedReason() + " - " + printResult
-                    .getDiagnosticMessage());
+            showToastMessage(getString(R.string.failure_toast_message, printResult.getPrintJobState(),
+                    printResult.getFailedReason(), printResult.getDiagnosticMessage()));
+            Log.d(TAG, "Printing result: " + printResult.getPrintJobState() + " : " +
+                    printResult.getFailedReason() + " - " + printResult.getDiagnosticMessage());
         } else {
             showToastMessage(getString(R.string.result_toast_message, printResult.getPrintJobState()));
             Log.d(TAG, "Printing result: " + printResult.getPrintJobState());
@@ -355,5 +352,12 @@ public class PrintingActivity extends AppCompatActivity {
 
     private void showToastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    private class StatusRecord {
+
+        String printerId;
+        String dateTime;
+        String status;
     }
 }

@@ -3,8 +3,12 @@
 ## Version 1.1.5
 
 * Update underlying rx-messenger library to v5.0.2.
+* Changed rx-messenger dependency to implementation. 
 * Upgraded the build tools.
+* Converted Print API library to use a jar file.
 * Reverted to Java 7 in the Print API.
+* Deprecate contrast level for image rows.
+* Upgrade printing example to use androidx
 
 ## Version 1.1.4
 

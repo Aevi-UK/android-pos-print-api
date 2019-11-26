@@ -7,8 +7,10 @@ apply from: '../publish-repo.gradle'
 
 dependencies {
     compileOnly domainDependencies.androidMockable
-    api domainDependencies.rxMessenger
+    implementation domainDependencies.rxMessenger
     api domainDependencies.jsonConverter
+    api domainDependencies.gson
+    api domainDependencies.rxJava
 
     testImplementation domainDependencies.androidMockable
     testImplementation testDependencies.junit
