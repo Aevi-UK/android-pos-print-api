@@ -13,12 +13,11 @@ android {
         targetSdkVersion projectTargetSdkVersion
         versionCode apiVersionCode
         versionName "${apiVersion}"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     if (project.hasProperty('keystore_path')) {
         signingConfigs {
-
             debug {
                 storeFile file("${keystore_path}")
                 storePassword "${keystore_key_password}"
@@ -54,7 +53,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
 }
 
 dependencies {
@@ -62,7 +60,7 @@ dependencies {
 
     implementation project(':print-api')
     // In your own project replace the line above with the implementation below
-    // implementation 'com.aevi.print:print-api:1.1.3'
+    // implementation 'com.aevi.print:print-api:1.1.5'
 
     implementation domainDependencies.rxJava
     implementation domainDependencies.rxAndroid

@@ -32,7 +32,7 @@ repositories {
 And then add to your dependencies section
 
 ```
-implementation 'com.aevi.print:print-api:1.1.3'
+implementation 'com.aevi.print:print-api:1.1.5'
 ```
 
 # Sample usage
