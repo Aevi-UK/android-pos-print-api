@@ -33,6 +33,14 @@ android {
         }
     }
 
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            def flavor = variant.name
+            def versionName = variant.versionName
+            outputFileName = "$applicationName-${flavor}-${versionName}.apk"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
