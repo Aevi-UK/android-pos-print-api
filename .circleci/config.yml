@@ -87,6 +87,8 @@ jobs:
       - *restore_cache
       - *build
       - *publish_to_qa
+      - store_artifacts:
+          path: PrintingExample/build/outputs/apk/release/
 
   deploy-release:
     <<: *job_config
@@ -97,6 +99,8 @@ jobs:
       - *restore_cache
       - *build
       - *publish_to_release
+      - store_artifacts:
+          path: PrintingExample/build/outputs/apk/release/
 
 workflows:
   version: 2
